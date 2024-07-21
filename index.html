@@ -58,7 +58,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            width: 98%;
+            width: 96%;
         }
         .color-box {
             width: 100px;
@@ -67,8 +67,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
-            font-size: 12px;
+            font-size: 14px;
             text-align: center;
             border: 1px solid #333;
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -76,6 +75,7 @@
             position: relative;
             border-radius: 8px;
             transition: transform 0.3s, box-shadow 0.3s;
+            padding: 10px;
         }
         .color-box.rounded {
             border-radius: 50%;
@@ -96,7 +96,7 @@
             z-index: 1;
             bottom: 125%;
             left: 50%;
-            margin-left: -50px;
+            margin-left: -60px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -136,9 +136,6 @@
         </div>
     </div>
     <div id="color-container" class="color-container"></div>
-    <footer style="padding: 20px; color: #ccc; text-align: center; width: 100%;">
-        <p style="margin: 0;">Dedicated to <a href="https://github.com/Lenochxd" style="color: #4a90e2; text-decoration: none;">Lenoch</a></p>
-    </footer>
     <div id="copy-message" class="copy-message">Copied!</div>
     <script>
         let colors = [];
@@ -160,6 +157,10 @@
                 const colorBox = document.createElement('div');
                 colorBox.className = 'color-box';
                 colorBox.style.backgroundColor = color.hex_code;
+
+                const textColor = isDarkColor(color.hex_code) ? '#ffffff' : '#000000';
+                colorBox.style.color = textColor;
+
                 colorBox.innerHTML = `
                     <span>${color.name}</span>
                     <div class="tooltip">${color.hex_code}</div>
@@ -168,6 +169,7 @@
                     navigator.clipboard.writeText(color.hex_code).then(() => {
                         showCopyMessage();
                         highlightColorBox(index);
+                        updateFavicon(color.hex_code);
                     }).catch(err => {
                         console.error('Failed to copy color code: ', err);
                     });
@@ -213,6 +215,20 @@
             setTimeout(() => {
                 copyMessage.classList.remove('show');
             }, 2000);
+        }
+
+        function updateFavicon(color) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+            favicon.rel = 'icon';
+            favicon.href = canvas.toDataURL('image/png');
+            document.head.appendChild(favicon);
         }
     </script>
 </body>
