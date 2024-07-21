@@ -19,7 +19,6 @@
             width: 100%;
             max-width: 1200px;
             padding: 20px;
-            background-color: transparent;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -59,8 +58,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            width: 100%;
-            max-width: 1200px;
+            width: 98%;
         }
         .color-box {
             width: 100px;
@@ -78,6 +76,9 @@
             position: relative;
             border-radius: 8px;
             transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .color-box.rounded {
+            border-radius: 50%;
         }
         .color-box:hover {
             transform: scale(1.1);
@@ -141,6 +142,7 @@
     <div id="copy-message" class="copy-message">Copied!</div>
     <script>
         let colors = [];
+        let lastCopiedColorIndex = null;
 
         fetch('https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json')
             .then(response => response.json())
@@ -154,7 +156,7 @@
         function displayColors(colorArray) {
             const container = document.getElementById('color-container');
             container.innerHTML = '';
-            colorArray.forEach(color => {
+            colorArray.forEach((color, index) => {
                 const colorBox = document.createElement('div');
                 colorBox.className = 'color-box';
                 colorBox.style.backgroundColor = color.hex_code;
@@ -165,6 +167,7 @@
                 colorBox.onclick = () => {
                     navigator.clipboard.writeText(color.hex_code).then(() => {
                         showCopyMessage();
+                        highlightColorBox(index);
                     }).catch(err => {
                         console.error('Failed to copy color code: ', err);
                     });
@@ -174,13 +177,16 @@
         }
 
         function filterColors(type) {
+            let filteredColors;
             if (type === 'dark') {
-                displayColors(colors.filter(color => isDarkColor(color.hex_code)));
+                filteredColors = colors.filter(color => isDarkColor(color.hex_code));
             } else if (type === 'light') {
-                displayColors(colors.filter(color => !isDarkColor(color.hex_code)));
+                filteredColors = colors.filter(color => !isDarkColor(color.hex_code));
             } else {
-                displayColors(colors);
+                filteredColors = colors;
             }
+            displayColors(filteredColors);
+            document.getElementById('color-count').innerText = `${filteredColors.length} colors available`;
         }
 
         function isDarkColor(hex) {
@@ -190,6 +196,15 @@
             const b = (rgb >>  0) & 0xff;
             const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
             return luminance < 128;
+        }
+
+        function highlightColorBox(index) {
+            const boxes = document.querySelectorAll('.color-box');
+            if (lastCopiedColorIndex !== null) {
+                boxes[lastCopiedColorIndex].classList.remove('rounded');
+            }
+            lastCopiedColorIndex = index;
+            boxes[index].classList.add('rounded');
         }
 
         function showCopyMessage() {
