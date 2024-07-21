@@ -1,0 +1,116 @@
+body {
+	background-color: #121212;
+	color: #e0e0e0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+}
+.header {
+	width: 100%;
+	max-width: 1200px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+.menu {
+	margin-top: 10px;
+}
+.menu button {
+	background-color: #333;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	margin: 0 5px;
+	cursor: pointer;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+	transition: background-color 0.3s, transform 0.3s;
+}
+.menu button:hover, .menu button.active {
+	background-color: #555;
+	transform: scale(1.05);
+}
+.info {
+	margin-top: 10px;
+	color: #ccc;
+}
+.info a {
+	color: #4a90e2;
+	text-decoration: none;
+}
+.info a:hover {
+	text-decoration: underline;
+}
+.color-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 96%;
+}
+.color-box {
+	width: 100px;
+	height: 100px;
+	margin: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	text-align: center;
+	border: 1px solid #333;
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	cursor: pointer;
+	position: relative;
+	border-radius: 8px;
+	transition: transform 0.3s, box-shadow 0.3s;
+	padding: 10px;
+}
+.color-box.rounded {
+	border-radius: 50%;
+}
+.color-box:hover {
+	transform: scale(1.1);
+	box-shadow: 0 0 10px rgba(0,0,0,0.7);
+}
+.tooltip {
+	visibility: hidden;
+	width: 100px;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px;
+	position: absolute;
+	z-index: 1;
+	bottom: 112%;
+	left: 50%;
+	margin-left: -55px;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+.color-box:hover .tooltip {
+	visibility: visible;
+	opacity: 1;
+}
+.copy-message {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #333;
+	color: #fff;
+	padding: 10px 20px;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	opacity: 0;
+	transition: opacity 0.3s;
+	z-index: 10;
+}
+.copy-message.show {
+	opacity: 1;
+}
