@@ -1,0 +1,93 @@
+---
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+  active?: boolean;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items = [] } = Astro.props;
+---
+
+<nav class="breadcrumb-nav">
+  <a href="/" class="breadcrumb-item home" title="Go to home">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+  </a>
+  
+  {items.map((item) => (
+    <>
+      <span class="breadcrumb-separator">/</span>
+      {item.active ? (
+        <span class="breadcrumb-item active">{item.label}</span>
+      ) : item.href ? (
+        <a href={item.href} class="breadcrumb-item">{item.label}</a>
+      ) : (
+        <span class="breadcrumb-item">{item.label}</span>
+      )}
+    </>
+  ))}
+</nav>
+
+<style>
+  .breadcrumb-nav {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    background: var(--controls-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .breadcrumb-item {
+    text-decoration: none;
+    color: var(--text-color);
+    opacity: 0.5;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  .breadcrumb-item:hover {
+    opacity: 1;
+  }
+
+  .breadcrumb-item.active {
+    opacity: 1;
+    cursor: default;
+  }
+
+  .breadcrumb-separator {
+    opacity: 0.2;
+    font-weight: 400;
+    font-size: 0.75rem;
+  }
+
+  .breadcrumb-item.home svg {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .breadcrumb-nav {
+      top: 16px;
+      left: 16px;
+      font-size: 0.75rem;
+    }
+  }
+</style>

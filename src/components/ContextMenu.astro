@@ -122,7 +122,6 @@
       }
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        // Dispatch event for parent to handle UI updates
         const event = new CustomEvent('color-copied', {
           detail: {
             color: lastRightClickedColor,

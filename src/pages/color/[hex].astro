@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch } from '../../utils/colorUtils';
 
 export const prerender = false;
@@ -32,43 +33,49 @@ const blackRating = getWCAGRating(blackContrast);
 const contrastColor = isDark ? '#ffffff' : '#000000';
 ---
 
-<Layout title={`Color ${colorHex} - Shades & Tints`}>
-  <main class="color-detail-page">
-    <div class="detail-header" id="detail-header" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
-      <div class="header-content">
-        <a href="/" class="back-link" id="back-link" style={`color: ${contrastColor}`}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          Back to list
-        </a>
+<Layout title={`Color ${colorHex}`}>
+  <Breadcrumbs items={[{ label: 'Color', active: false }, { label: colorHex, active: true }]} />
+  
+  <div class="sticky-color-bar" id="sticky-color-bar">
+    <div class="sticky-swatch" id="sticky-swatch" style={`background-color: ${colorHex}`}></div>
+    <input type="text" id="sticky-hex" value={colorHex} spellcheck="false" maxlength="7" />
+  </div>
+  
+  <main class="color-detail-page guidelined">
+    <div class="guideline-v v1"></div>
+    <div class="guideline-v v2"></div>
+    <div class="guideline-v v3"></div>
+    <div class="guideline-v v4"></div>
+    <div class="guideline-h h1"></div>
+    <div class="guideline-h h2"></div>
+    <div class="guideline-h h3"></div>
+    <div class="guideline-h h4"></div>
+    <div class="action-group">
+      <button class="header-action-btn" id="random-btn" title="Shuffle color (Press Space)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 3h5v5"></path>
+          <path d="M4 20l7-7"></path>
+          <path d="M21 3l-7 7"></path>
+          <path d="M15 15l1.3-1.3"></path>
+          <path d="M18.5 18.5l2.5 2.5"></path>
+          <path d="M4 4l5 5"></path>
+          <path d="M21 16v5h-5"></path>
+        </svg>
+        Shuffle <span class="kbd-hint">Space</span>
+      </button>
+      <div class="divider"></div>
+      <button class="header-action-btn" id="copy-css-btn" title="Copy CSS Variables">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        CSS
+      </button>
+      <button class="header-action-btn" id="copy-tw-btn" title="Copy Tailwind Config">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        Tailwind
+      </button>
+    </div>
 
-        <div class="action-group">
-          <button class="header-action-btn" id="random-btn" title="Shuffle color (Press Space)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 3h5v5"></path>
-              <path d="M4 20l7-7"></path>
-              <path d="M21 3l-7 7"></path>
-              <path d="M15 15l1.3-1.3"></path>
-              <path d="M18.5 18.5l2.5 2.5"></path>
-              <path d="M4 4l5 5"></path>
-              <path d="M21 16v5h-5"></path>
-            </svg>
-            Shuffle <span class="kbd-hint">Space</span>
-          </button>
-          <div class="divider"></div>
-          <button class="header-action-btn" id="copy-css-btn" title="Copy CSS Variables">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            CSS
-          </button>
-          <button class="header-action-btn" id="copy-tw-btn" title="Copy Tailwind Config">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-            Tailwind
-          </button>
-        </div>
-        
-        <div class="color-editor-card">
+
+    <div class="color-editor-card" id="overview" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
           <div class="main-hex-section">
             <div class="info-wrapper">
               <span class="info-icon" data-tooltip="Main color hex code. Edit to change the base color.">
@@ -195,39 +202,37 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
           </div>
         </div>
 
-        <div class="accessibility-check" id="accessibility-check">
-          <div class="contrast-item">
-            <span class="info-icon" data-tooltip="Contrast ratio against white background. WCAG AA requires 4.5:1 for normal text.">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            </span>
-            <span class="label">vs White:</span>
-            <span class="ratio">{whiteContrast.toFixed(2)}:1</span>
-            <div class="badges">
-              <span class={`badge ${whiteRating.AA ? 'pass' : 'fail'}`}>AA</span>
-              <span class={`badge ${whiteRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
-            </div>
+      <div class="accessibility-check" id="accessibility-check">
+        <div class="contrast-item">
+          <span class="info-icon" data-tooltip="Contrast ratio against white background. WCAG AA requires 4.5:1 for normal text.">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          <span class="label">vs White:</span>
+          <span class="ratio">{whiteContrast.toFixed(2)}:1</span>
+          <div class="badges">
+            <span class={`badge ${whiteRating.AA ? 'pass' : 'fail'}`}>AA</span>
+            <span class={`badge ${whiteRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
           </div>
-          <div class="contrast-item">
-            <span class="info-icon" data-tooltip="Contrast ratio against black background. WCAG AA requires 4.5:1 for normal text.">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            </span>
-            <span class="label">vs Black:</span>
-            <span class="ratio">{blackContrast.toFixed(2)}:1</span>
-            <div class="badges">
-              <span class={`badge ${blackRating.AA ? 'pass' : 'fail'}`}>AA</span>
-              <span class={`badge ${blackRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
-            </div>
+        </div>
+        <div class="contrast-item">
+          <span class="info-icon" data-tooltip="Contrast ratio against black background. WCAG AA requires 4.5:1 for normal text.">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          <span class="label">vs Black:</span>
+          <span class="ratio">{blackContrast.toFixed(2)}:1</span>
+          <div class="badges">
+            <span class={`badge ${blackRating.AA ? 'pass' : 'fail'}`}>AA</span>
+            <span class={`badge ${blackRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
           </div>
         </div>
       </div>
-    </div>
 
     <div class="page-container">
       <aside class="sidebar-toc">
         <nav>
           <ul>
             <li>
-              <a href="#detail-header" class="toc-link active" data-section="overview">
+              <a href="#overview" class="toc-link active" data-section="overview">
                 <span class="toc-dot"></span>
                 Overview
               </a>
@@ -239,15 +244,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               </a>
             </li>
             <li>
-              <a href="#tints-section" class="toc-link" data-section="tints">
+              <a href="#shades-tints-section" class="toc-link" data-section="shades-tints">
                 <span class="toc-dot"></span>
-                Tints
-              </a>
-            </li>
-            <li>
-              <a href="#shades-section" class="toc-link" data-section="shades">
-                <span class="toc-dot"></span>
-                Shades
+                Shades & Tints
               </a>
             </li>
           </ul>
@@ -271,7 +270,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
           <div class="dashboard-divider"></div>
 
-          <div class="grids-area">
+          <div class="grids-area" id="shades-tints-section">
             <section class="column" id="tints-section">
               <div class="section-header">
                 <div class="header-with-info">
@@ -332,37 +331,31 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   .color-detail-page {
     min-height: 100vh;
     background-color: var(--bg-color);
+    padding-top: 80px;
   }
 
-  .detail-header {
-    padding: 30px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    position: relative;
-    box-shadow: inset 0 -100px 100px -50px rgba(0,0,0,0.1);
-  }
+
 
   .color-editor-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 25px;
-    border-radius: 32px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
-    margin: 15px 0;
-    width: 100%;
+    margin: 15px auto;
+    width: 90%;
     max-width: 950px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     color: inherit;
+    border: none;
+    box-shadow: var(--shadow-main);
+    background: inherit;
+    border-radius: var(--radius-sm);
+    position: relative;
+    z-index: 10;
   }
 
   .main-hex-section {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 25px;
   }
 
@@ -378,81 +371,132 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     letter-spacing: -0.05em;
     text-transform: uppercase;
     color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 2px;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
   }
 
-  .back-link {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 100px;
-    transition: all 0.2s;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .back-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(-4px);
+  #color-input:hover, #color-input:focus {
+    text-decoration-color: currentColor;
   }
 
   .action-group {
-    position: absolute;
-    top: 30px;
-    right: 30px;
+    position: fixed;
+    top: 50%;
+    right: 24px;
+    transform: translateY(-50%);
+    z-index: 100;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    padding: 4px;
-    gap: 4px;
+    background: var(--controls-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 6px;
+    gap: 2px;
+    box-shadow: var(--shadow-main);
   }
 
   .header-action-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 6px;
+    width: 70px;
     background: transparent;
     border: none;
-    border-radius: 100px;
+    border-radius: var(--radius-sm);
     color: inherit;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.2s;
+    text-align: center;
   }
 
   .header-action-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--button-hover);
   }
 
   .action-group .divider {
-    width: 1px;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    margin: 0 4px;
+    width: 32px;
+    height: 1px;
+    background: var(--border-color);
+    margin: 6px 0;
+    opacity: 0.5;
   }
 
   .kbd-hint {
-    font-size: 0.65rem;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    opacity: 0.8;
-    margin-left: 4px;
+    font-size: 0.55rem;
+    background: var(--surface-color);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid var(--border-color);
+    opacity: 0.7;
+    margin-top: 2px;
     font-weight: 800;
     letter-spacing: 0.05em;
+    color: var(--text-color);
+    display: block;
+  }
+
+  .sticky-color-bar {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translate(-50%, -100px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: var(--controls-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-main);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sticky-color-bar.visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .sticky-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  #sticky-hex {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    letter-spacing: 0.02em;
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 80px;
+    padding: 0;
+    cursor: text;
+    text-transform: uppercase;
+    border-bottom: 1px dashed var(--border-color);
+  }
+
+  #sticky-hex:hover, #sticky-hex:focus {
+    border-bottom: 1px solid var(--accent-color);
   }
 
   .editor-grid {
@@ -466,10 +510,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     display: flex;
     flex-direction: column;
     gap: 15px;
-    background: rgba(0, 0, 0, 0.05);
+    background: transparent;
     padding: 20px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: none;
   }
 
   .value-input-group {
@@ -477,14 +520,14 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     display: flex;
     flex-direction: column;
     gap: 2px;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--button-active);
     padding: 12px 16px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     transition: background 0.2s;
   }
 
   .value-input-group:focus-within {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--button-hover);
   }
 
   .value-label {
@@ -528,16 +571,16 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   }
   .sliders-column::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
   }
 
   .group-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     font-weight: 800;
     opacity: 0.3;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 2px;
+    margin-bottom: 6px;
   }
 
   .slider-group {
@@ -563,11 +606,10 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   .slider-item input[type="range"] {
     flex: 1;
     -webkit-appearance: none;
-    background: rgba(0, 0, 0, 0.1);
     height: 8px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     outline: none;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-inset);
     cursor: pointer;
   }
 
@@ -577,30 +619,35 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
   .slider-item input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
+    width: 14px;
     height: 20px;
     background: #fff;
-    border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    border: 3px solid rgba(0,0,0,0.1);
-    transition: transform 0.2s cubic-bezier(0.2, 1, 0.3, 1);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.1);
+    transition: transform 0.2s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.2s;
+    margin-top: -6px;
   }
 
   .slider-item input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
+    box-shadow: var(--shadow-hover);
   }
 
   .accessibility-check {
     display: flex;
     justify-content: center;
     gap: 30px;
-    background: rgba(0, 0, 0, 0.1);
-    padding: 10px 25px;
-    border-radius: 100px;
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 10px;
+    background: var(--surface-color);
+    padding: 12px 25px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-main);
+    margin: 20px auto;
+    width: 90%;
+    max-width: 950px;
+    position: relative;
+    z-index: 10;
   }
 
   .contrast-item {
@@ -646,7 +693,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     background: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 8px 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
     font-weight: 500;
     width: 180px;
@@ -656,7 +703,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
     transform: translateY(10px);
     backdrop-filter: blur(10px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-main);
     pointer-events: none;
     line-height: 1.4;
   }
@@ -667,11 +714,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     transform: translateY(0);
   }
 
-  .main-hex-section {
-    position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 25px;
-  }
 
   .header-with-info {
     display: flex;
@@ -698,14 +740,14 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     font-size: 0.65rem;
     font-weight: 800;
     padding: 2px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     background: rgba(0,0,0,0.2);
     color: white;
   }
 
   .badge.pass {
     background: #22c55e;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    box-shadow: var(--shadow-glow-success);
   }
 
   .badge.fail {
@@ -737,9 +779,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     padding: 20px;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(15px);
-    border-radius: 24px;
+    border-radius: var(--radius-sm);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-main);
   }
 
   .sidebar-toc ul {
@@ -766,7 +808,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     width: 6px;
     height: 6px;
     background: currentColor;
-    border-radius: 50%;
+    border-radius: var(--radius-sm);
     transition: transform 0.3s;
   }
 
@@ -799,13 +841,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   }
 
   .color-dashboard {
-    background: var(--surface-color);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid var(--border-color);
-    border-radius: 32px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.1);
-    overflow: hidden;
+    background: transparent;
+    box-shadow: none;
+    border: none;
   }
 
   .harmonies-area {
@@ -849,7 +887,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     gap: 8px;
     background: rgba(0, 0, 0, 0.02);
     padding: 12px;
-    border-radius: 16px;
+    border-radius: var(--radius-sm);
     border: 1px solid rgba(0, 0, 0, 0.03);
     transition: all 0.2s;
   }
@@ -920,7 +958,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     transform: scale(1.1) rotate(0deg);
   }
 
-  /* Adjustments for light/dark content */
   .card-overlay[style*="color: #fff"] {
     background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.05));
   }
@@ -940,8 +977,10 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     .header-content h1, #color-input {
       font-size: 3rem !important;
     }
-    .detail-header {
-      height: 30vh;
+    .action-group {
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%) scale(0.9);
     }
   }
 </style>
@@ -954,8 +993,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   const hslInput = document.getElementById('hsl-input') as HTMLInputElement;
   const cmykInput = document.getElementById('cmyk-input') as HTMLInputElement;
   const oklchInput = document.getElementById('oklch-input') as HTMLInputElement;
-  const detailHeader = document.getElementById('detail-header') as HTMLElement;
-  const backLink = document.getElementById('back-link') as HTMLElement;
   const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
   const tintsGrid = document.getElementById('tints-grid') as HTMLElement;
   const shadesGrid = document.getElementById('shades-grid') as HTMLElement;
@@ -963,6 +1000,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   const accessCheck = document.getElementById('accessibility-check') as HTMLElement;
   const copyCssBtn = document.getElementById('copy-css-btn') as HTMLButtonElement;
   const copyTwBtn = document.getElementById('copy-tw-btn') as HTMLButtonElement;
+  const colorEditorCard = document.querySelector('.color-editor-card') as HTMLElement;
 
   const copyIconSVG = `
     <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -971,7 +1009,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     </svg>
   `;
 
-  // Sliders
   const sliderR = document.getElementById('slider-r') as HTMLInputElement;
   const sliderG = document.getElementById('slider-g') as HTMLInputElement;
   const sliderB = document.getElementById('slider-b') as HTMLInputElement;
@@ -1016,15 +1053,26 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     });
   }
 
-  function setupSliderGroup(sliders: HTMLInputElement[], updateFn: () => void) {
+  function setupSliderGroup(sliders: HTMLInputElement[], updateFn: (sourceId: string) => void) {
     sliders.forEach(slider => {
-      slider.addEventListener('input', updateFn);
+      const triggerUpdate = () => updateFn(slider.id);
+      
+      slider.addEventListener('input', triggerUpdate);
+      
       slider.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) < 1) return;
         e.preventDefault();
+        
         const step = Number.parseFloat(slider.step) || 1;
+        const min = Number.parseFloat(slider.min) || 0;
+        const max = Number.parseFloat(slider.max) || 100;
+        const currentVal = Number.parseFloat(slider.value);
+        
         const delta = e.deltaY < 0 ? step : -step;
-        slider.value = (Number.parseFloat(slider.value) + delta).toString();
-        slider.dispatchEvent(new Event('input'));
+        const newVal = Math.max(min, Math.min(max, currentVal + delta));
+        
+        slider.value = newVal.toString();
+        triggerUpdate();
       }, { passive: false });
     });
   }
@@ -1051,8 +1099,10 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     const whiteWCAG = getWCAGRating(whiteRatio);
     const blackWCAG = getWCAGRating(blackRatio);
 
-    detailHeader.style.backgroundColor = hex;
-    detailHeader.style.color = contrast;
+    if (colorEditorCard) {
+      colorEditorCard.style.backgroundColor = hex;
+      colorEditorCard.style.color = contrast;
+    }
     
     if (sourceInputId !== 'color-input') colorInput.value = hex;
     if (sourceInputId !== 'rgb-input') rgbInput.value = rgb;
@@ -1088,8 +1138,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     hslInput.style.color = contrast;
     cmykInput.style.color = contrast;
     oklchInput.style.color = contrast;
-    backLink.style.color = contrast;
-    randomBtn.style.color = contrast;
 
     if (accessCheck) {
       accessCheck.innerHTML = `
@@ -1189,15 +1237,37 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
     const pureHex = hex.substring(1);
     window.history.replaceState({}, '', `/color/${pureHex}`);
-    document.title = `Color ${hex} - Shades & Tints`;
+    document.title = `Color ${hex}`;
+
+    const stickyHex = document.getElementById('sticky-hex') as HTMLInputElement;
+    const stickySwatch = document.getElementById('sticky-swatch');
+    if (stickyHex && sourceInputId !== 'sticky-hex') stickyHex.value = hex;
+    if (stickySwatch) stickySwatch.style.backgroundColor = hex;
+
+    document.dispatchEvent(new CustomEvent('color-copied', {
+      detail: { color: hex }
+    }));
   }
+
+  const stickyBar = document.getElementById('sticky-color-bar');
+  const overviewSection = document.getElementById('overview');
+
+  window.addEventListener('scroll', () => {
+    if (overviewSection) {
+      const rect = overviewSection.getBoundingClientRect();
+      if (rect.bottom < 150) {
+        stickyBar?.classList.add('visible');
+      } else {
+        stickyBar?.classList.remove('visible');
+      }
+    }
+  });
 
   const tocLinks = document.querySelectorAll('.toc-link');
   const sections = [
     document.getElementById('detail-header'),
     document.getElementById('harmonies-section'),
-    document.getElementById('tints-section'),
-    document.getElementById('shades-section')
+    document.getElementById('shades-tints-section')
   ];
 
   const observerOptions = {
@@ -1229,7 +1299,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     
     const startRgb = getRawRgb(colorInput.value);
     const endRgb = getRawRgb(targetHex);
-    const duration = 1500; // Slower, cinematic duration
+    const duration = 1500;
     const startTime = performance.now();
 
     function step(currentTime: number) {
@@ -1285,6 +1355,18 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     }
   });
 
+  const stickyHexInput = document.getElementById('sticky-hex') as HTMLInputElement;
+  stickyHexInput?.addEventListener('input', (e) => {
+    let value = (e.target as HTMLInputElement).value;
+    if (!value.startsWith('#') && value.length > 0) value = '#' + value;
+    if (value.length > 7) value = value.substring(0, 7);
+    stickyHexInput.value = value;
+    
+    if (value.length === 7) {
+      updatePageContent(value.toUpperCase(), 'sticky-hex');
+    }
+  });
+
   rgbInput?.addEventListener('input', (e) => {
     const value = (e.target as HTMLInputElement).value;
     const match = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/i);
@@ -1307,20 +1389,20 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     }
   });
 
-  setupSliderGroup([sliderR, sliderG, sliderB], () => {
-    updatePageContent(rgbToHex(Number.parseInt(sliderR.value), Number.parseInt(sliderG.value), Number.parseInt(sliderB.value)), 'slider-rgb');
+  setupSliderGroup([sliderR, sliderG, sliderB], (id) => {
+    updatePageContent(rgbToHex(Number.parseInt(sliderR.value), Number.parseInt(sliderG.value), Number.parseInt(sliderB.value)), id);
   });
 
-  setupSliderGroup([sliderH, sliderS, sliderL], () => {
-    updatePageContent(hslToHex(Number.parseInt(sliderH.value), Number.parseInt(sliderS.value), Number.parseInt(sliderL.value)), 'slider-hsl');
+  setupSliderGroup([sliderH, sliderS, sliderL], (id) => {
+    updatePageContent(hslToHex(Number.parseInt(sliderH.value), Number.parseInt(sliderS.value), Number.parseInt(sliderL.value)), id);
   });
 
-  setupSliderGroup([sliderC, sliderM, sliderY, sliderK], () => {
-    updatePageContent(cmykToHex(Number.parseInt(sliderC.value), Number.parseInt(sliderM.value), Number.parseInt(sliderY.value), Number.parseInt(sliderK.value)), 'slider-cmyk');
+  setupSliderGroup([sliderC, sliderM, sliderY, sliderK], (id) => {
+    updatePageContent(cmykToHex(Number.parseInt(sliderC.value), Number.parseInt(sliderM.value), Number.parseInt(sliderY.value), Number.parseInt(sliderK.value)), id);
   });
 
-  setupSliderGroup([sliderOkL, sliderOkC, sliderOkH], () => {
-    updatePageContent(oklchToHex(Number.parseFloat(sliderOkL.value), Number.parseFloat(sliderOkC.value), Number.parseFloat(sliderOkH.value)), 'slider-oklch');
+  setupSliderGroup([sliderOkL, sliderOkC, sliderOkH], (id) => {
+    updatePageContent(oklchToHex(Number.parseFloat(sliderOkL.value), Number.parseFloat(sliderOkC.value), Number.parseFloat(sliderOkH.value)), id);
   });
 
   document.body.addEventListener('click', (e) => {

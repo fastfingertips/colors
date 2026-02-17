@@ -1,0 +1,128 @@
+<div class="theme-controller">
+  <button id="theme-light" title="Light Mode">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  </button>
+  <button id="theme-dark" title="Dark Mode">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  <button id="theme-system" title="System Preference">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+  </button>
+  <div class="theme-indicator"></div>
+</div>
+
+<style>
+  .theme-controller {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    display: flex;
+    background: var(--controls-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    z-index: 1000;
+    box-shadow: var(--shadow-main);
+  }
+
+  button {
+    background: transparent;
+    border: none;
+    padding: 6px 10px;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: opacity 0.2s;
+    opacity: 0.5;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  button.active {
+    opacity: 1;
+  }
+
+  .theme-indicator {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: calc(100% - 4px);
+    background: var(--surface-color);
+    border-radius: var(--radius-sm);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s;
+    z-index: 1;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+  }
+
+  @media (max-width: 768px) {
+    .theme-controller {
+      top: auto;
+      bottom: 24px;
+      right: 24px;
+    }
+  }
+</style>
+
+<script>
+  const lightBtn = document.getElementById('theme-light');
+  const darkBtn = document.getElementById('theme-dark');
+  const systemBtn = document.getElementById('theme-system');
+  const indicator = document.querySelector('.theme-indicator') as HTMLElement;
+  const buttons = [lightBtn, darkBtn, systemBtn];
+
+  function updateTheme(theme: 'light' | 'dark' | 'system', save = true) {
+    if (save) localStorage.setItem('theme', theme);
+
+    if (theme === 'system') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    buttons.forEach(btn => btn?.classList.remove('active'));
+    
+    let activeBtn;
+    if (theme === 'light') activeBtn = lightBtn;
+    else if (theme === 'dark') activeBtn = darkBtn;
+    else activeBtn = systemBtn;
+
+    activeBtn?.classList.add('active');
+
+    if (activeBtn && indicator) {
+      indicator.style.width = `${activeBtn.offsetWidth}px`;
+      indicator.style.transform = `translateX(${activeBtn.offsetLeft - 2}px)`;
+    }
+  }
+
+  lightBtn?.addEventListener('click', () => updateTheme('light'));
+  darkBtn?.addEventListener('click', () => updateTheme('dark'));
+  systemBtn?.addEventListener('click', () => updateTheme('system'));
+
+  const savedTheme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
+  updateTheme(savedTheme, false);
+
+  document.addEventListener('astro:after-swap', () => {
+    const theme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
+    updateTheme(theme, false);
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (localStorage.getItem('theme') === 'system' || !localStorage.getItem('theme')) {
+    }
+  });
+
+  window.addEventListener('load', () => {
+    const theme = (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
+    updateTheme(theme, false);
+  });
+</script>

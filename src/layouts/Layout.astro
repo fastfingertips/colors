@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import ContextMenu from '../components/ContextMenu.astro';
+import ThemeController from '../components/ThemeController.astro';
 
 interface Props {
 	title: string;
@@ -21,8 +22,19 @@ const { title } = Astro.props;
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<script is:inline>
+			(function() {
+				const theme = localStorage.getItem('theme') || 'system';
+				if (theme === 'dark') {
+					document.documentElement.setAttribute('data-theme', 'dark');
+				} else if (theme === 'light') {
+					document.documentElement.setAttribute('data-theme', 'light');
+				}
+			})();
+		</script>
 	</head>
 	<body>
+		<ThemeController />
 		<slot />
 		
 		<div id="copy-message" class="copy-message">Copied to clipboard!</div>
@@ -66,7 +78,6 @@ const { title } = Astro.props;
 				}
 			}
 
-			// Global listener for color copy events (from ContextMenu or local clicks)
 			document.addEventListener('color-copied', ((e: CustomEvent) => {
 				const { color, element, message } = e.detail;
 				if (element) highlightColorBox(element);
