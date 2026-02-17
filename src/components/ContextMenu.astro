@@ -34,7 +34,6 @@
   const menuHexVal = contextMenu?.querySelector('button[data-format="hex"] .value-preview') as HTMLElement;
   const menuRgbVal = contextMenu?.querySelector('button[data-format="rgb"] .value-preview') as HTMLElement;
   const menuHslVal = contextMenu?.querySelector('button[data-format="hsl"] .value-preview') as HTMLElement;
-  const copyMsg = document.getElementById('copy-message') as HTMLElement;
 
   let lastRightClickedColor: string = '';
   let lastRightClickedElement: HTMLElement | null = null;
@@ -70,16 +69,7 @@
     return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
   }
 
-  function showCopyMessage(text: string) {
-    if (copyMsg) {
-      copyMsg.innerText = text;
-      copyMsg.classList.add('show');
-      setTimeout(() => {
-        copyMsg.innerText = 'Copied to clipboard!';
-        copyMsg.classList.remove('show');
-      }, 2500);
-    }
-  }
+
 
   if (contextMenu) {
     document.addEventListener('contextmenu', (e) => {
@@ -144,13 +134,12 @@
       }
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        showCopyMessage(`Copied ${format?.toUpperCase()}!`);
-        
         // Dispatch event for parent to handle UI updates
         const event = new CustomEvent('color-copied', {
           detail: {
             color: lastRightClickedColor,
-            element: lastRightClickedElement
+            element: lastRightClickedElement,
+            message: `Copied ${format?.toUpperCase()}!`
           }
         });
         document.dispatchEvent(event);

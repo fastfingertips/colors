@@ -183,11 +183,18 @@ import ContextMenu from '../components/ContextMenu.astro';
 		box.classList.add('rounded');
 	}
 
-	function showCopyMessage() {
-		if (copyMsg) copyMsg.classList.add('show');
-		setTimeout(() => {
-			if (copyMsg) copyMsg.classList.remove('show');
-		}, 2500);
+	function showCopyMessage(text: string = 'Copied to clipboard!') {
+		if (copyMsg) {
+			copyMsg.innerText = text;
+			copyMsg.classList.add('show');
+			setTimeout(() => {
+				copyMsg.classList.remove('show');
+				// Reset text after animation
+				setTimeout(() => {
+					copyMsg.innerText = 'Copied to clipboard!';
+				}, 300);
+			}, 2500);
+		}
 	}
 
 	function updateFavicon(color: string) {
@@ -288,12 +295,15 @@ import ContextMenu from '../components/ContextMenu.astro';
 
 	// Listen for custom event from ContextMenu component
 	document.addEventListener('color-copied', ((e: CustomEvent) => {
-		const { color, element } = e.detail;
+		const { color, element, message } = e.detail;
 		if (element) {
 			highlightColorBox(element);
 		}
 		if (color) {
 			updateFavicon(color);
+		}
+		if (message) {
+			showCopyMessage(message);
 		}
 	}) as EventListener);
 
