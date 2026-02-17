@@ -65,10 +65,15 @@ import Layout from '../layouts/Layout.astro';
 	function displayColors(colorArray: any[]) {
 		if (!container) return;
 		container.innerHTML = '';
-		colorArray.forEach((color) => {
+		
+		// Reduce stagger for large arrays to maintain performance
+		const staggerDelay = colorArray.length > 100 ? 5 : 15;
+
+		colorArray.forEach((color, index) => {
 			const colorBox = document.createElement('div');
 			colorBox.className = 'color-box';
 			colorBox.style.backgroundColor = color.hex_code;
+			colorBox.style.animationDelay = `${index * staggerDelay}ms`;
 
 			const textColor = isDarkColor(color.hex_code) ? '#ffffff' : '#000000';
 			colorBox.style.color = textColor;
@@ -97,7 +102,15 @@ import Layout from '../layouts/Layout.astro';
 		indicator.style.transform = `translateX(${btn.offsetLeft - 6}px)`;
 	}
 
-	function filterColors(type: 'all' | 'dark' | 'light') {
+	async function filterColors(type: 'all' | 'dark' | 'light') {
+		if (!container) return;
+
+		// Start fade out
+		container.classList.add('filtering');
+		
+		// Wait for fade out
+		await new Promise(resolve => setTimeout(resolve, 300));
+
 		let filteredColors: any[];
 		if (type === 'dark') {
 			filteredColors = colors.filter(color => isDarkColor(color.hex_code));
@@ -106,8 +119,12 @@ import Layout from '../layouts/Layout.astro';
 		} else {
 			filteredColors = colors;
 		}
+		
 		displayColors(filteredColors);
 		if (colorCount) colorCount.innerText = `${filteredColors.length} colors available`;
+
+		// End fade out
+		container.classList.remove('filtering');
 
 		// Update active button
 		const activeBtn = document.getElementById(`${type}-button`) as HTMLButtonElement;
