@@ -201,8 +201,13 @@ import GridControls from '../components/GridControls.astro';
 	}
 
 	window.addEventListener('load', () => {
-		moveIndicator(indicator, allBtn);
-		moveIndicator(gridIndicator, gridComfortable);
+		const initIndicators = () => {
+			moveIndicator(indicator, allBtn);
+			moveIndicator(gridIndicator, gridComfortable);
+		};
+		initIndicators();
+		document.fonts.ready.then(initIndicators);
+		setTimeout(initIndicators, 100);
 	});
 
 	window.addEventListener('resize', () => {
