@@ -66,6 +66,7 @@ h1 {
 }
 
 .menu {
+  position: relative;
   margin-top: 20px;
   background: var(--surface-color);
   padding: 6px;
@@ -76,7 +77,20 @@ h1 {
   gap: 4px;
 }
 
+.menu-indicator {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 6px;
+  background-color: var(--button-active);
+  border-radius: 8px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 0;
+}
+
 .menu button {
+  position: relative;
   background-color: transparent;
   color: var(--text-color);
   border: none;
@@ -86,6 +100,7 @@ h1 {
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
 }
 
 .menu button:hover {
@@ -93,8 +108,7 @@ h1 {
 }
 
 .menu button.active {
-  background-color: var(--button-active);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
 }
 
 .info {

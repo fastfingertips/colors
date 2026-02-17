@@ -7,6 +7,7 @@ import Layout from '../layouts/Layout.astro';
 		<div class="header">
 			<h1>Colors</h1>
 			<div class="menu">
+				<div id="menu-indicator" class="menu-indicator"></div>
 				<button id="all-button" class="active">All</button>
 				<button id="dark-button">Dark</button>
 				<button id="light-button">Light</button>
@@ -27,15 +28,16 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-	let colors = [];
-	let lastCopiedColorIndex = null;
+	let colors: any[] = [];
+	let lastCopiedColorIndex: number | null = null;
 
-	const container = document.getElementById('color-container');
-	const colorCount = document.getElementById('color-count');
-	const allBtn = document.getElementById('all-button');
-	const darkBtn = document.getElementById('dark-button');
-	const lightBtn = document.getElementById('light-button');
-	const copyMsg = document.getElementById('copy-message');
+	const container = document.getElementById('color-container') as HTMLElement;
+	const colorCount = document.getElementById('color-count') as HTMLElement;
+	const allBtn = document.getElementById('all-button') as HTMLButtonElement;
+	const darkBtn = document.getElementById('dark-button') as HTMLButtonElement;
+	const lightBtn = document.getElementById('light-button') as HTMLButtonElement;
+	const copyMsg = document.getElementById('copy-message') as HTMLElement;
+	const indicator = document.getElementById('menu-indicator') as HTMLElement;
 
 	// Initial fetch
 	fetch('https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json')
@@ -44,13 +46,14 @@ import Layout from '../layouts/Layout.astro';
 			colors = data;
 			displayColors(colors);
 			colorCount.innerText = `${colors.length} colors available`;
+			updateIndicator(allBtn);
 		})
 		.catch(error => {
 			console.error('Error fetching the colors:', error);
 			colorCount.innerText = 'Error loading colors';
 		});
 
-	function isDarkColor(hex) {
+	function isDarkColor(hex: string) {
 		const rgb = parseInt(hex.slice(1), 16);
 		const r = (rgb >> 16) & 0xff;
 		const g = (rgb >> 8) & 0xff;
@@ -59,10 +62,10 @@ import Layout from '../layouts/Layout.astro';
 		return luminance < 128;
 	}
 
-	function displayColors(colorArray) {
+	function displayColors(colorArray: any[]) {
 		if (!container) return;
 		container.innerHTML = '';
-		colorArray.forEach((color, index) => {
+		colorArray.forEach((color) => {
 			const colorBox = document.createElement('div');
 			colorBox.className = 'color-box';
 			colorBox.style.backgroundColor = color.hex_code;
@@ -88,8 +91,14 @@ import Layout from '../layouts/Layout.astro';
 		});
 	}
 
-	function filterColors(type) {
-		let filteredColors;
+	function updateIndicator(btn: HTMLElement | null) {
+		if (!indicator || !btn) return;
+		indicator.style.width = `${btn.offsetWidth}px`;
+		indicator.style.transform = `translateX(${btn.offsetLeft - 6}px)`;
+	}
+
+	function filterColors(type: 'all' | 'dark' | 'light') {
+		let filteredColors: any[];
 		if (type === 'dark') {
 			filteredColors = colors.filter(color => isDarkColor(color.hex_code));
 		} else if (type === 'light') {
@@ -98,38 +107,52 @@ import Layout from '../layouts/Layout.astro';
 			filteredColors = colors;
 		}
 		displayColors(filteredColors);
-		colorCount.innerText = `${filteredColors.length} colors available`;
+		if (colorCount) colorCount.innerText = `${filteredColors.length} colors available`;
 
 		// Update active button
+		const activeBtn = document.getElementById(`${type}-button`) as HTMLButtonElement;
 		[allBtn, darkBtn, lightBtn].forEach(btn => btn.classList.remove('active'));
-		document.getElementById(`${type}-button`).classList.add('active');
+		if (activeBtn) {
+			activeBtn.classList.add('active');
+			updateIndicator(activeBtn);
+		}
 	}
 
-	function highlightColorBox(box) {
+	function highlightColorBox(box: HTMLElement) {
 		document.querySelectorAll('.color-box').forEach(b => b.classList.remove('rounded'));
 		box.classList.add('rounded');
 	}
 
 	function showCopyMessage() {
-		copyMsg.classList.add('show');
+		if (copyMsg) copyMsg.classList.add('show');
 		setTimeout(() => {
-			copyMsg.classList.remove('show');
+			if (copyMsg) copyMsg.classList.remove('show');
 		}, 2500);
 	}
 
-	function updateFavicon(color) {
+	function updateFavicon(color: string) {
 		const canvas = document.createElement('canvas');
 		canvas.width = 32;
 		canvas.height = 32;
 		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+		
 		ctx.fillStyle = color;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-		const favicon = document.querySelector('link[rel="icon"]') || document.createElement('link');
+		const favicon = (document.querySelector('link[rel="icon"]') as HTMLLinkElement) || document.createElement('link');
 		favicon.rel = 'icon';
 		favicon.href = canvas.toDataURL('image/png');
-		document.head.appendChild(favicon);
+		if (!document.querySelector('link[rel="icon"]')) {
+			document.head.appendChild(favicon);
+		}
 	}
+
+	// Update indicator on resize
+	window.addEventListener('resize', () => {
+		const activeBtn = document.querySelector('.menu button.active');
+		updateIndicator(activeBtn);
+	});
 
 	// Event Listeners
 	allBtn?.addEventListener('click', () => filterColors('all'));
