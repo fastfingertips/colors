@@ -230,4 +230,29 @@ import GridControls from '../components/GridControls.astro';
 	allBtn?.addEventListener('click', () => filterColors('all'));
 	darkBtn?.addEventListener('click', () => filterColors('dark'));
 	lightBtn?.addEventListener('click', () => filterColors('light'));
+
+	const toggleGap = document.getElementById('toggle-gap') as HTMLButtonElement;
+	const toggleInfo = document.getElementById('toggle-info') as HTMLButtonElement;
+
+	toggleGap?.addEventListener('click', () => {
+		const isActive = toggleGap.classList.contains('active');
+		if (isActive) {
+			toggleGap.classList.remove('active');
+			container.classList.add('no-gap');
+		} else {
+			toggleGap.classList.add('active');
+			container.classList.remove('no-gap');
+		}
+	});
+
+	toggleInfo?.addEventListener('click', () => {
+		const isActive = toggleInfo.classList.contains('active');
+		if (isActive) {
+			toggleInfo.classList.remove('active');
+			container.classList.remove('show-info');
+		} else {
+			toggleInfo.classList.add('active');
+			container.classList.add('show-info');
+		}
+	});
 </script>
