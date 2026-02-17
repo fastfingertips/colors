@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
 ---
 
 <Layout title="Colors">
@@ -24,6 +25,8 @@ import Layout from '../layouts/Layout.astro';
 		</footer>
 
 		<div id="copy-message" class="copy-message">Copied to clipboard!</div>
+		
+		<ScrollToTop />
 	</main>
 </Layout>
 
@@ -167,7 +170,7 @@ import Layout from '../layouts/Layout.astro';
 
 	// Update indicator on resize
 	window.addEventListener('resize', () => {
-		const activeBtn = document.querySelector('.menu button.active');
+		const activeBtn = document.querySelector('.menu button.active') as HTMLElement;
 		updateIndicator(activeBtn);
 	});
 

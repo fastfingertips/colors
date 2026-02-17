@@ -1,0 +1,28 @@
+---
+---
+
+<button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m18 15-6-6-6 6"/>
+  </svg>
+</button>
+
+
+<script>
+  const scrollBtn = document.getElementById('scroll-to-top');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollBtn?.classList.add('show');
+    } else {
+      scrollBtn?.classList.remove('show');
+    }
+  });
+
+  scrollBtn?.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+</script>
