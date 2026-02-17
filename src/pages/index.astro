@@ -4,12 +4,50 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 import FilterMenu from '../components/FilterMenu.astro';
 import Footer from '../components/Footer.astro';
 import GridControls from '../components/GridControls.astro';
+import ContextMenu from '../components/ContextMenu.astro';
 ---
 
 <Layout title="Colors">
 	<main>
 		<div class="header">
 			<h1>Colors</h1>
+			<div class="header-desc">
+				<span class="desc-item">
+					<span class="key-badge icon" title="Left Click">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="6" y="2" width="12" height="20" rx="4"></rect>
+							<line x1="12" y1="2" x2="12" y2="10"></line>
+							<line x1="6" y1="10" x2="18" y2="10"></line>
+							<path d="M6 6a4 4 0 0 1 4-4h2v8H6V6z" fill="currentColor"></path>
+						</svg>
+					</span> 
+					<span class="action-text">to copy</span>
+				</span>
+				<span class="desc-separator">&middot;</span>
+				<span class="desc-item">
+					<span class="key-badge icon" title="Right Click">
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="6" y="2" width="12" height="20" rx="4"></rect>
+							<line x1="12" y1="2" x2="12" y2="10"></line>
+							<line x1="6" y1="10" x2="18" y2="10"></line>
+							<path d="M12 2h2a4 4 0 0 1 4 4v4h-6V2z" fill="currentColor"></path>
+						</svg>
+					</span> 
+					<span class="action-text">for menu</span>
+				</span>
+				<span class="desc-separator">&middot;</span>
+				<span class="desc-item">
+					<span class="key-badge icon" title="Spacebar">
+						<svg width="24" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M20 5H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"></path>
+							<path d="M8 11h8" stroke-width="2"></path>
+							<path d="M20 9v2" stroke-width="1"></path>
+							<path d="M4 9v2" stroke-width="1"></path>
+						</svg>
+					</span> 
+					<span class="action-text">toggle view</span>
+				</span>
+			</div>
 		</div>
 
 		<div class="controls-container">
@@ -24,6 +62,8 @@ import GridControls from '../components/GridControls.astro';
 
 		<div id="copy-message" class="copy-message">Copied to clipboard!</div>
 		
+		<ContextMenu />
+
 		<ScrollToTop />
 	</main>
 </Layout>
@@ -77,6 +117,7 @@ import GridControls from '../components/GridControls.astro';
 			colorBox.style.setProperty('--card-rgb', `${r}, ${g}, ${b}`);
 			colorBox.style.backgroundColor = color.hex_code;
 			colorBox.style.animationDelay = `${index * staggerDelay}ms`;
+			colorBox.setAttribute('data-hex', color.hex_code);
 
 			const textColor = isDarkColor(color.hex_code) ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)';
 			colorBox.style.color = textColor;
@@ -253,6 +294,14 @@ import GridControls from '../components/GridControls.astro';
 		} else {
 			toggleInfo.classList.add('active');
 			container.classList.add('show-info');
+		}
+	});
+
+	// Keyboard shortcut for grid gap (Space)
+	document.addEventListener('keydown', (e) => {
+		if (e.code === 'Space') {
+			e.preventDefault(); // Prevent scroll
+			toggleGap?.click();
 		}
 	});
 </script>
