@@ -1,26 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ScrollToTop from '../components/ScrollToTop.astro';
+import FilterMenu from '../components/FilterMenu.astro';
+import GridControls from '../components/GridControls.astro';
 ---
 
 <Layout title="Colors">
 	<main>
 		<div class="header">
 			<h1>Colors</h1>
-			<div class="menu">
-				<div id="menu-indicator" class="menu-indicator"></div>
-				<button id="all-button" class="active">All</button>
-				<button id="dark-button">Dark</button>
-				<button id="light-button">Light</button>
-			</div>
-			<div class="info">
-				<span id="color-count">Loading colors...</span> | Data source: <a href="https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json" target="_blank">colors_db.json</a>
-			</div>
+		</div>
+
+		<div class="controls-container">
+			<FilterMenu />
+			<span id="color-count">...</span>
+			<GridControls />
 		</div>
 
 		<div id="color-container" class="color-container"></div>
 
 		<footer>
+			<p>Data source: <a href="https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json" target="_blank">colors_db.json</a></p>
 			<p>Dedicated to <a href="https://github.com/Lenochxd" target="_blank">Lenoch</a></p>
 		</footer>
 
@@ -42,14 +42,13 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 	const copyMsg = document.getElementById('copy-message') as HTMLElement;
 	const indicator = document.getElementById('menu-indicator') as HTMLElement;
 
-	// Initial fetch
 	fetch('https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json')
 		.then(response => response.json())
 		.then(data => {
 			colors = data;
 			displayColors(colors);
 			colorCount.innerText = `${colors.length} colors available`;
-			updateIndicator(allBtn);
+			moveIndicator(indicator, allBtn);
 		})
 		.catch(error => {
 			console.error('Error fetching the colors:', error);
@@ -69,7 +68,6 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 		if (!container) return;
 		container.innerHTML = '';
 		
-		// Reduce stagger for large arrays to maintain performance
 		const staggerDelay = colorArray.length > 100 ? 5 : 15;
 
 		colorArray.forEach((color, index) => {
@@ -99,19 +97,16 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 		});
 	}
 
-	function updateIndicator(btn: HTMLElement | null) {
-		if (!indicator || !btn) return;
-		indicator.style.width = `${btn.offsetWidth}px`;
-		indicator.style.transform = `translateX(${btn.offsetLeft - 6}px)`;
+	function moveIndicator(targetIndicator: HTMLElement | null, btn: HTMLElement | null) {
+		if (!targetIndicator || !btn) return;
+		targetIndicator.style.width = `${btn.offsetWidth}px`;
+		targetIndicator.style.transform = `translateX(${btn.offsetLeft - 2}px)`;
 	}
 
 	async function filterColors(type: 'all' | 'dark' | 'light') {
 		if (!container) return;
 
-		// Start fade out
 		container.classList.add('filtering');
-		
-		// Wait for fade out
 		await new Promise(resolve => setTimeout(resolve, 300));
 
 		let filteredColors: any[];
@@ -126,15 +121,13 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 		displayColors(filteredColors);
 		if (colorCount) colorCount.innerText = `${filteredColors.length} colors available`;
 
-		// End fade out
 		container.classList.remove('filtering');
 
-		// Update active button
 		const activeBtn = document.getElementById(`${type}-button`) as HTMLButtonElement;
 		[allBtn, darkBtn, lightBtn].forEach(btn => btn.classList.remove('active'));
 		if (activeBtn) {
 			activeBtn.classList.add('active');
-			updateIndicator(activeBtn);
+			moveIndicator(indicator, activeBtn);
 		}
 	}
 
@@ -168,13 +161,61 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 		}
 	}
 
-	// Update indicator on resize
-	window.addEventListener('resize', () => {
-		const activeBtn = document.querySelector('.menu button.active') as HTMLElement;
-		updateIndicator(activeBtn);
+	const gridCompact = document.getElementById('grid-compact') as HTMLButtonElement;
+	const gridComfortable = document.getElementById('grid-comfortable') as HTMLButtonElement;
+	const gridLarge = document.getElementById('grid-large') as HTMLButtonElement;
+	const gridIndicator = document.getElementById('grid-indicator') as HTMLElement;
+
+	async function setGridSize(size: 'compact' | 'comfortable' | 'large') {
+		if (!container) return;
+		
+		container.classList.add('filtering');
+		await new Promise(resolve => setTimeout(resolve, 300));
+
+		container.classList.remove('compact', 'large');
+		if (size !== 'comfortable') {
+			container.classList.add(size);
+		}
+
+		const currentFilter = (document.querySelector('.menu button.active') as HTMLElement)?.id.split('-')[0] as 'all' | 'dark' | 'light';
+		
+		let filteredColors: any[];
+		if (currentFilter === 'dark') {
+			filteredColors = colors.filter(color => isDarkColor(color.hex_code));
+		} else if (currentFilter === 'light') {
+			filteredColors = colors.filter(color => !isDarkColor(color.hex_code));
+		} else {
+			filteredColors = colors;
+		}
+		
+		displayColors(filteredColors);
+
+		const activeBtn = document.getElementById(`grid-${size}`) as HTMLButtonElement;
+		[gridCompact, gridComfortable, gridLarge].forEach(btn => btn?.classList.remove('active'));
+		if (activeBtn) {
+			activeBtn.classList.add('active');
+			moveIndicator(gridIndicator, activeBtn);
+		}
+
+		container.classList.remove('filtering');
+	}
+
+	window.addEventListener('load', () => {
+		moveIndicator(indicator, allBtn);
+		moveIndicator(gridIndicator, gridComfortable);
 	});
 
-	// Event Listeners
+	window.addEventListener('resize', () => {
+		const activeMenuBtn = document.querySelector('.menu button.active') as HTMLElement;
+		const activeGridBtn = document.querySelector('.grid-controls button.active') as HTMLElement;
+		moveIndicator(indicator, activeMenuBtn);
+		moveIndicator(gridIndicator, activeGridBtn);
+	});
+
+	gridCompact?.addEventListener('click', () => setGridSize('compact'));
+	gridComfortable?.addEventListener('click', () => setGridSize('comfortable'));
+	gridLarge?.addEventListener('click', () => setGridSize('large'));
+
 	allBtn?.addEventListener('click', () => filterColors('all'));
 	darkBtn?.addEventListener('click', () => filterColors('dark'));
 	lightBtn?.addEventListener('click', () => filterColors('light'));
