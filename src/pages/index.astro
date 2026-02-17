@@ -69,9 +69,9 @@ import ContextMenu from '../components/ContextMenu.astro';
 </Layout>
 
 <script>
-	let colors: any[] = [];
-	let lastCopiedColorIndex: number | null = null;
+	import { isDarkColor } from '../utils/colorUtils';
 
+	let colors: any[] = [];
 	const container = document.getElementById('color-container') as HTMLElement;
 	const colorCount = document.getElementById('color-count') as HTMLElement;
 	const allBtn = document.getElementById('all-button') as HTMLButtonElement;
@@ -92,15 +92,6 @@ import ContextMenu from '../components/ContextMenu.astro';
 			console.error('Error fetching the colors:', error);
 			colorCount.innerText = 'Error loading colors';
 		});
-
-	function isDarkColor(hex: string) {
-		const rgb = parseInt(hex.slice(1), 16);
-		const r = (rgb >> 16) & 0xff;
-		const g = (rgb >> 8) & 0xff;
-		const b = (rgb >> 0) & 0xff;
-		const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-		return luminance < 128;
-	}
 
 	function displayColors(colorArray: any[]) {
 		if (!container) return;
