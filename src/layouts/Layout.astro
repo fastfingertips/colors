@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import ContextMenu from '../components/ContextMenu.astro';
 
 interface Props {
 	title: string;
@@ -23,5 +24,55 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<slot />
+		
+		<div id="copy-message" class="copy-message">Copied to clipboard!</div>
+		<ContextMenu />
+
+		<script>
+			function updateFavicon(color: string) {
+				const canvas = document.createElement('canvas');
+				canvas.width = 32;
+				canvas.height = 32;
+				const ctx = canvas.getContext('2d');
+				if (!ctx) return;
+				
+				ctx.fillStyle = color;
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				const favicon = (document.querySelector('link[rel="icon"]') as HTMLLinkElement) || document.createElement('link');
+				favicon.rel = 'icon';
+				favicon.href = canvas.toDataURL('image/png');
+				if (!document.querySelector('link[rel="icon"]')) {
+					document.head.appendChild(favicon);
+				}
+			}
+
+			function highlightColorBox(box: HTMLElement) {
+				document.querySelectorAll('.color-box, .color-card').forEach(b => b.classList.remove('rounded'));
+				box.classList.add('rounded');
+			}
+
+			function showCopyMessage(text: string = 'Copied to clipboard!') {
+				const copyMsg = document.getElementById('copy-message');
+				if (copyMsg) {
+					copyMsg.innerText = text;
+					copyMsg.classList.add('show');
+					setTimeout(() => {
+						copyMsg.classList.remove('show');
+						setTimeout(() => {
+							copyMsg.innerText = 'Copied to clipboard!';
+						}, 300);
+					}, 2500);
+				}
+			}
+
+			// Global listener for color copy events (from ContextMenu or local clicks)
+			document.addEventListener('color-copied', ((e: CustomEvent) => {
+				const { color, element, message } = e.detail;
+				if (element) highlightColorBox(element);
+				if (color) updateFavicon(color);
+				if (message) showCopyMessage(message);
+			}) as EventListener);
+		</script>
 	</body>
 </html>

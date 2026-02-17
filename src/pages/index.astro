@@ -4,7 +4,6 @@ import ScrollToTop from '../components/ScrollToTop.astro';
 import FilterMenu from '../components/FilterMenu.astro';
 import Footer from '../components/Footer.astro';
 import GridControls from '../components/GridControls.astro';
-import ContextMenu from '../components/ContextMenu.astro';
 ---
 
 <Layout title="Colors">
@@ -59,11 +58,7 @@ import ContextMenu from '../components/ContextMenu.astro';
 		<div id="color-container" class="color-container show-info no-gap"></div>
 
 		<Footer />
-
-		<div id="copy-message" class="copy-message">Copied to clipboard!</div>
 		
-		<ContextMenu />
-
 		<ScrollToTop />
 	</main>
 </Layout>
@@ -77,7 +72,6 @@ import ContextMenu from '../components/ContextMenu.astro';
 	const allBtn = document.getElementById('all-button') as HTMLButtonElement;
 	const darkBtn = document.getElementById('dark-button') as HTMLButtonElement;
 	const lightBtn = document.getElementById('light-button') as HTMLButtonElement;
-	const copyMsg = document.getElementById('copy-message') as HTMLElement;
 	const indicator = document.getElementById('menu-indicator') as HTMLElement;
 
 	fetch('https://gist.githubusercontent.com/Lenochxd/12a1927943a2ce151560e1b9585d4bfa/raw/41d5a0dc9336827cefb217c1728f0e9415b1c7b9/colors_db.json')
@@ -124,9 +118,14 @@ import ContextMenu from '../components/ContextMenu.astro';
 
 			colorBox.onclick = () => {
 				navigator.clipboard.writeText(color.hex_code).then(() => {
-					showCopyMessage();
-					highlightColorBox(colorBox);
-					updateFavicon(color.hex_code);
+					const event = new CustomEvent('color-copied', {
+						detail: {
+							color: color.hex_code,
+							element: colorBox,
+							message: 'Copied HEX!'
+						}
+					});
+					document.dispatchEvent(event);
 				}).catch(err => {
 					console.error('Failed to copy color code: ', err);
 				});
@@ -166,43 +165,6 @@ import ContextMenu from '../components/ContextMenu.astro';
 		if (activeBtn) {
 			activeBtn.classList.add('active');
 			moveIndicator(indicator, activeBtn);
-		}
-	}
-
-	function highlightColorBox(box: HTMLElement) {
-		document.querySelectorAll('.color-box').forEach(b => b.classList.remove('rounded'));
-		box.classList.add('rounded');
-	}
-
-	function showCopyMessage(text: string = 'Copied to clipboard!') {
-		if (copyMsg) {
-			copyMsg.innerText = text;
-			copyMsg.classList.add('show');
-			setTimeout(() => {
-				copyMsg.classList.remove('show');
-				// Reset text after animation
-				setTimeout(() => {
-					copyMsg.innerText = 'Copied to clipboard!';
-				}, 300);
-			}, 2500);
-		}
-	}
-
-	function updateFavicon(color: string) {
-		const canvas = document.createElement('canvas');
-		canvas.width = 32;
-		canvas.height = 32;
-		const ctx = canvas.getContext('2d');
-		if (!ctx) return;
-		
-		ctx.fillStyle = color;
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-		const favicon = (document.querySelector('link[rel="icon"]') as HTMLLinkElement) || document.createElement('link');
-		favicon.rel = 'icon';
-		favicon.href = canvas.toDataURL('image/png');
-		if (!document.querySelector('link[rel="icon"]')) {
-			document.head.appendChild(favicon);
 		}
 	}
 
@@ -283,20 +245,6 @@ import ContextMenu from '../components/ContextMenu.astro';
 			container.classList.remove('no-gap');
 		}
 	});
-
-	// Listen for custom event from ContextMenu component
-	document.addEventListener('color-copied', ((e: CustomEvent) => {
-		const { color, element, message } = e.detail;
-		if (element) {
-			highlightColorBox(element);
-		}
-		if (color) {
-			updateFavicon(color);
-		}
-		if (message) {
-			showCopyMessage(message);
-		}
-	}) as EventListener);
 
 	toggleInfo?.addEventListener('click', () => {
 		const isActive = toggleInfo.classList.contains('active');

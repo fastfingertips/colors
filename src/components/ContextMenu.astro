@@ -24,6 +24,15 @@
   </button>
   <div class="menu-separator"></div>
   <button data-format="css">Copy CSS Variable</button>
+  <div class="menu-separator"></div>
+  <button data-action="view-details" class="view-details-btn">
+    <span>View Shades & Tints</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+      <polyline points="15 3 21 3 21 9"></polyline>
+      <line x1="10" y1="14" x2="21" y2="3"></line>
+    </svg>
+  </button>
 </div>
 
 <script>
@@ -45,7 +54,7 @@
   if (contextMenu) {
     document.addEventListener('contextmenu', (e) => {
       const target = e.target as HTMLElement;
-      const colorBox = target.closest('.color-box') as HTMLElement;
+      const colorBox = target.closest('.color-box, .color-card') as HTMLElement;
 
       if (colorBox) {
         e.preventDefault();
@@ -94,6 +103,14 @@
       if (!btn || !lastRightClickedColor) return;
 
       const format = btn.getAttribute('data-format');
+      const action = btn.getAttribute('data-action');
+
+      if (action === 'view-details') {
+        const pureHex = lastRightClickedColor.substring(1);
+        window.location.href = `/color/${pureHex}`;
+        return;
+      }
+
       let textToCopy = lastRightClickedColor;
 
       if (format === 'rgb') {

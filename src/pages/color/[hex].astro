@@ -1,0 +1,1333 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch } from '../../utils/colorUtils';
+
+export const prerender = false;
+
+const { hex } = Astro.params;
+const colorHex = `#${hex}`;
+
+const isValidHex = /^#[0-9A-F]{6}$/i.test(colorHex);
+
+if (!isValidHex) {
+  return Astro.redirect('/');
+}
+
+const shades = generateShades(colorHex);
+const tints = generateTints(colorHex).reverse();
+const isDark = isDarkColor(colorHex);
+const rgb = hexToRgb(colorHex);
+const hsl = hexToHsl(colorHex);
+const rawCmyk = getRawCmyk(colorHex);
+const rawOklch = getRawOklch(colorHex);
+const cmyk = `cmyk(${rawCmyk.c}%, ${rawCmyk.m}%, ${rawCmyk.y}%, ${rawCmyk.k}%)`;
+const oklch = `oklch(${rawOklch.l}%, ${rawOklch.c}, ${rawOklch.h})`;
+
+const whiteContrast = getContrastRatio(colorHex, '#ffffff');
+const blackContrast = getContrastRatio(colorHex, '#000000');
+const whiteRating = getWCAGRating(whiteContrast);
+const blackRating = getWCAGRating(blackContrast);
+
+const contrastColor = isDark ? '#ffffff' : '#000000';
+---
+
+<Layout title={`Color ${colorHex} - Shades & Tints`}>
+  <main class="color-detail-page">
+    <div class="detail-header" id="detail-header" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
+      <div class="header-content">
+        <a href="/" class="back-link" id="back-link" style={`color: ${contrastColor}`}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to list
+        </a>
+
+        <div class="action-group">
+          <button class="header-action-btn" id="random-btn" title="Shuffle color (Press Space)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 3h5v5"></path>
+              <path d="M4 20l7-7"></path>
+              <path d="M21 3l-7 7"></path>
+              <path d="M15 15l1.3-1.3"></path>
+              <path d="M18.5 18.5l2.5 2.5"></path>
+              <path d="M4 4l5 5"></path>
+              <path d="M21 16v5h-5"></path>
+            </svg>
+            Shuffle <span class="kbd-hint">Space</span>
+          </button>
+          <div class="divider"></div>
+          <button class="header-action-btn" id="copy-css-btn" title="Copy CSS Variables">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            CSS
+          </button>
+          <button class="header-action-btn" id="copy-tw-btn" title="Copy Tailwind Config">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            Tailwind
+          </button>
+        </div>
+        
+        <div class="color-editor-card">
+          <div class="main-hex-section">
+            <div class="info-wrapper">
+              <span class="info-icon" data-tooltip="Main color hex code. Edit to change the base color.">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </span>
+            </div>
+            <input 
+              type="text" 
+              id="color-input" 
+              value={colorHex} 
+              spellcheck="false"
+              maxlength="7"
+            />
+          </div>
+
+          <div class="editor-grid">
+            <div class="color-space-block">
+              <div class="value-input-group">
+                <div class="info-wrapper">
+                  <span class="info-icon" data-tooltip="Red, Green, Blue color model. Values 0-255.">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+                <span class="value-label">RGB</span>
+                <input type="text" id="rgb-input" value={rgb} spellcheck="false" />
+              </div>
+              <div class="slider-group">
+                <div class="slider-item">
+                  <label>R</label>
+                  <input type="range" id="slider-r" min="0" max="255" />
+                </div>
+                <div class="slider-item">
+                  <label>G</label>
+                  <input type="range" id="slider-g" min="0" max="255" />
+                </div>
+                <div class="slider-item">
+                  <label>B</label>
+                  <input type="range" id="slider-b" min="0" max="255" />
+                </div>
+              </div>
+            </div>
+
+            <div class="color-space-block">
+              <div class="value-input-group">
+                <div class="info-wrapper">
+                  <span class="info-icon" data-tooltip="Hue, Saturation, Lightness. H: 0-360, S: 0-100%, L: 0-100%.">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+                <span class="value-label">HSL</span>
+                <input type="text" id="hsl-input" value={hsl} spellcheck="false" />
+              </div>
+              <div class="slider-group">
+                <div class="slider-item">
+                  <label>H</label>
+                  <input type="range" id="slider-h" min="0" max="360" />
+                </div>
+                <div class="slider-item">
+                  <label>S</label>
+                  <input type="range" id="slider-s" min="0" max="100" />
+                </div>
+                <div class="slider-item">
+                  <label>L</label>
+                  <input type="range" id="slider-l" min="0" max="100" />
+                </div>
+              </div>
+            </div>
+
+            <div class="color-space-block">
+              <div class="value-input-group">
+                <div class="info-wrapper">
+                  <span class="info-icon" data-tooltip="Cyan, Magenta, Yellow, Key (Black). Standard for print.">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+                <span class="value-label">CMYK</span>
+                <input type="text" id="cmyk-input" value={cmyk} spellcheck="false" readonly />
+              </div>
+              <div class="slider-group">
+                <div class="slider-item">
+                  <label>C</label>
+                  <input type="range" id="slider-c" min="0" max="100" />
+                </div>
+                <div class="slider-item">
+                  <label>M</label>
+                  <input type="range" id="slider-m" min="0" max="100" />
+                </div>
+                <div class="slider-item">
+                  <label>Y</label>
+                  <input type="range" id="slider-y" min="0" max="100" />
+                </div>
+                <div class="slider-item">
+                  <label>K</label>
+                  <input type="range" id="slider-k" min="0" max="100" />
+                </div>
+              </div>
+            </div>
+
+            <div class="color-space-block">
+              <div class="value-input-group">
+                <div class="info-wrapper">
+                  <span class="info-icon" data-tooltip="Perceptual Lightness, Chroma, Hue. Modern color space for consistent perceived lightness.">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+                <span class="value-label">OKLCH</span>
+                <input type="text" id="oklch-input" value={oklch} spellcheck="false" readonly />
+              </div>
+              <div class="slider-group">
+                <div class="slider-item">
+                  <label>L</label>
+                  <input type="range" id="slider-ok-l" min="0" max="100" />
+                </div>
+                <div class="slider-item">
+                  <label>C</label>
+                  <input type="range" id="slider-ok-c" min="0" max="0.32" step="0.001" />
+                </div>
+                <div class="slider-item">
+                  <label>H</label>
+                  <input type="range" id="slider-ok-h" min="0" max="360" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accessibility-check" id="accessibility-check">
+          <div class="contrast-item">
+            <span class="info-icon" data-tooltip="Contrast ratio against white background. WCAG AA requires 4.5:1 for normal text.">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </span>
+            <span class="label">vs White:</span>
+            <span class="ratio">{whiteContrast.toFixed(2)}:1</span>
+            <div class="badges">
+              <span class={`badge ${whiteRating.AA ? 'pass' : 'fail'}`}>AA</span>
+              <span class={`badge ${whiteRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
+            </div>
+          </div>
+          <div class="contrast-item">
+            <span class="info-icon" data-tooltip="Contrast ratio against black background. WCAG AA requires 4.5:1 for normal text.">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </span>
+            <span class="label">vs Black:</span>
+            <span class="ratio">{blackContrast.toFixed(2)}:1</span>
+            <div class="badges">
+              <span class={`badge ${blackRating.AA ? 'pass' : 'fail'}`}>AA</span>
+              <span class={`badge ${blackRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-container">
+      <aside class="sidebar-toc">
+        <nav>
+          <ul>
+            <li>
+              <a href="#detail-header" class="toc-link active" data-section="overview">
+                <span class="toc-dot"></span>
+                Overview
+              </a>
+            </li>
+            <li>
+              <a href="#harmonies-section" class="toc-link" data-section="harmonies">
+                <span class="toc-dot"></span>
+                Harmonies
+              </a>
+            </li>
+            <li>
+              <a href="#tints-section" class="toc-link" data-section="tints">
+                <span class="toc-dot"></span>
+                Tints
+              </a>
+            </li>
+            <li>
+              <a href="#shades-section" class="toc-link" data-section="shades">
+                <span class="toc-dot"></span>
+                Shades
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="content-section">
+        <div class="color-dashboard">
+          <section class="harmonies-area" id="harmonies-section">
+            <div class="section-header">
+              <div class="header-with-info">
+                <h2>Harmonies</h2>
+                <span class="info-icon" data-tooltip="Mathematical color relationships.">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="harmonies-grid" id="harmonies-grid">
+            </div>
+          </section>
+
+          <div class="dashboard-divider"></div>
+
+          <div class="grids-area">
+            <section class="column" id="tints-section">
+              <div class="section-header">
+                <div class="header-with-info">
+                  <h2>Tints</h2>
+                  <span class="info-icon" data-tooltip="Original color mixed with white.">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+              </div>
+              <div class="grid" id="tints-grid">
+                {tints.map((tint) => (
+                  <div class="color-card" data-hex={tint} style={`background-color: ${tint}`}>
+                    <div class="card-overlay" style={`color: ${isDarkColor(tint) ? '#fff' : '#000'}`}>
+                      <span class="hex-label">{tint}</span>
+                      <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section class="column" id="shades-section">
+              <div class="section-header">
+                <div class="header-with-info">
+                  <h2>Shades</h2>
+                  <span class="info-icon" data-tooltip="Original color mixed with black.">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+              </div>
+              <div class="grid" id="shades-grid">
+                {shades.map((shade) => (
+                  <div class="color-card" data-hex={shade} style={`background-color: ${shade}`}>
+                    <div class="card-overlay" style={`color: ${isDarkColor(shade) ? '#fff' : '#000'}`}>
+                      <span class="hex-label">{shade}</span>
+                      <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </main>
+</Layout>
+
+<style is:global>
+  .color-detail-page {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+  }
+
+  .detail-header {
+    padding: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    box-shadow: inset 0 -100px 100px -50px rgba(0,0,0,0.1);
+  }
+
+  .color-editor-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 25px;
+    border-radius: 32px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    margin: 15px 0;
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: inherit;
+  }
+
+  .main-hex-section {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 25px;
+  }
+
+  #color-input {
+    background: transparent;
+    border: none;
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-align: center;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    color: inherit;
+  }
+
+  .back-link {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 100px;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .back-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-4px);
+  }
+
+  .action-group {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .header-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 100px;
+    color: inherit;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .header-action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .action-group .divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+  }
+
+  .kbd-hint {
+    font-size: 0.65rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0.8;
+    margin-left: 4px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+
+  .editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: flex-start;
+  }
+
+  .color-space-block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .value-input-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: rgba(0, 0, 0, 0.15);
+    padding: 12px 16px;
+    border-radius: 12px;
+    transition: background 0.2s;
+  }
+
+  .value-input-group:focus-within {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .value-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  .value-input-group input {
+    background: transparent;
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+    outline: none;
+    color: inherit;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .sliders-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  .sliders-column::-webkit-scrollbar {
+    width: 4px;
+  }
+  .sliders-column::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sliders-column::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .group-label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    opacity: 0.3;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 5px;
+  }
+
+  .slider-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .slider-item label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    width: 20px;
+    opacity: 0.7;
+  }
+
+  .slider-item input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    background: rgba(0, 0, 0, 0.1);
+    height: 8px;
+    border-radius: 10px;
+    outline: none;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+
+  #slider-h {
+    background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+  }
+
+  .slider-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    border: 3px solid rgba(0,0,0,0.1);
+    transition: transform 0.2s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .slider-item input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  .accessibility-check {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 10px 25px;
+    border-radius: 100px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+  }
+
+  .contrast-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .contrast-item .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .info-wrapper {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+  }
+
+  .info-icon {
+    cursor: help;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .info-icon:hover {
+    opacity: 1;
+  }
+
+  .info-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    width: 180px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
+    transform: translateY(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    pointer-events: none;
+    line-height: 1.4;
+  }
+
+  .info-icon:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .main-hex-section {
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 25px;
+  }
+
+  .header-with-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-with-info .info-icon {
+    margin-top: 5px;
+  }
+
+  .contrast-item .ratio {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .badges {
+    display: flex;
+    gap: 6px;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+    color: white;
+  }
+
+  .badge.pass {
+    background: #22c55e;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+  }
+
+  .badge.fail {
+    background: #ef4444;
+    opacity: 0.5;
+  }
+
+  .dot {
+    margin: 0 10px;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .sidebar-toc {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: fit-content;
+    z-index: 100;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  }
+
+  .sidebar-toc ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.4;
+    transition: all 0.3s;
+  }
+
+  .toc-dot {
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .toc-link:hover {
+    opacity: 0.8;
+  }
+
+  .toc-link.active {
+    opacity: 1;
+    color: var(--primary-color);
+  }
+
+  .toc-link.active .toc-dot {
+    transform: scale(2);
+  }
+
+  .content-section {
+    margin: 40px 0 100px;
+    position: relative;
+    z-index: 10;
+  }
+
+  @media (max-width: 1000px) {
+    .page-container {
+      grid-template-columns: 1fr;
+    }
+    .sidebar-toc {
+      display: none;
+    }
+  }
+
+  .color-dashboard {
+    background: var(--surface-color);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid var(--border-color);
+    border-radius: 32px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .harmonies-area {
+    padding: 30px;
+  }
+
+  .shades-tints-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+    opacity: 0.5;
+  }
+
+  .grids-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 30px;
+  }
+
+  .section-header {
+    margin-bottom: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+  }
+
+  .harmonies-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+
+  .harmony-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.2s;
+  }
+
+  .harmony-group:hover {
+    background: rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+
+  .harmony-label {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-color);
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+
+  .harmony-colors {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .harmony-colors .color-card {
+    height: 60px;
+    margin: 0;
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .harmony-colors .hex-label {
+    font-size: 0.85rem;
+  }
+
+  .column h2 {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .section-desc {
+    font-size: 0.95rem;
+    opacity: 0.6;
+    margin-bottom: 24px;
+  }
+
+  .grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .color-card:hover {
+    z-index: 10;
+  }
+
+  .copy-icon {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .color-card:hover .copy-icon {
+    opacity: 1;
+    transform: scale(1.1) rotate(0deg);
+  }
+
+  /* Adjustments for light/dark content */
+  .card-overlay[style*="color: #fff"] {
+    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.05));
+  }
+  
+  .card-overlay[style*="color: #000"] {
+    background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,0.05));
+  }
+
+  @media (max-width: 900px) {
+    .shades-tints-grid {
+      grid-template-columns: 1fr;
+      padding: 24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header-content h1, #color-input {
+      font-size: 3rem !important;
+    }
+    .detail-header {
+      height: 30vh;
+    }
+  }
+</style>
+
+<script>
+  import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, rgbToHex, hslToHex, getRawRgb, getRawHsl, getRandomHex, getColorHarmonies, getRawCmyk, getRawOklch, cmykToHex, oklchToHex } from '../../utils/colorUtils';
+
+  const colorInput = document.getElementById('color-input') as HTMLInputElement;
+  const rgbInput = document.getElementById('rgb-input') as HTMLInputElement;
+  const hslInput = document.getElementById('hsl-input') as HTMLInputElement;
+  const cmykInput = document.getElementById('cmyk-input') as HTMLInputElement;
+  const oklchInput = document.getElementById('oklch-input') as HTMLInputElement;
+  const detailHeader = document.getElementById('detail-header') as HTMLElement;
+  const backLink = document.getElementById('back-link') as HTMLElement;
+  const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
+  const tintsGrid = document.getElementById('tints-grid') as HTMLElement;
+  const shadesGrid = document.getElementById('shades-grid') as HTMLElement;
+  const harmoniesGrid = document.getElementById('harmonies-grid') as HTMLElement;
+  const accessCheck = document.getElementById('accessibility-check') as HTMLElement;
+  const copyCssBtn = document.getElementById('copy-css-btn') as HTMLButtonElement;
+  const copyTwBtn = document.getElementById('copy-tw-btn') as HTMLButtonElement;
+
+  const copyIconSVG = `
+    <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  `;
+
+  // Sliders
+  const sliderR = document.getElementById('slider-r') as HTMLInputElement;
+  const sliderG = document.getElementById('slider-g') as HTMLInputElement;
+  const sliderB = document.getElementById('slider-b') as HTMLInputElement;
+  const sliderH = document.getElementById('slider-h') as HTMLInputElement;
+  const sliderS = document.getElementById('slider-s') as HTMLInputElement;
+  const sliderL = document.getElementById('slider-l') as HTMLInputElement;
+  const sliderC = document.getElementById('slider-c') as HTMLInputElement;
+  const sliderM = document.getElementById('slider-m') as HTMLInputElement;
+  const sliderY = document.getElementById('slider-y') as HTMLInputElement;
+  const sliderK = document.getElementById('slider-k') as HTMLInputElement;
+  const sliderOkL = document.getElementById('slider-ok-l') as HTMLInputElement;
+  const sliderOkC = document.getElementById('slider-ok-c') as HTMLInputElement;
+  const sliderOkH = document.getElementById('slider-ok-h') as HTMLInputElement;
+
+  function createColorCard(hex: string) {
+    const isDark = isDarkColor(hex);
+    const card = document.createElement('div');
+    card.className = 'color-card';
+    card.setAttribute('data-hex', hex);
+    card.style.backgroundColor = hex;
+    
+    card.innerHTML = `
+      <div class="card-overlay" style="color: ${isDark ? '#fff' : '#000'}">
+        <span class="hex-label">${hex}</span>
+        ${copyIconSVG}
+      </div>
+    `;
+    
+    return card;
+  }
+
+  function copyToClipboard(hex: string, element?: HTMLElement) {
+    navigator.clipboard.writeText(hex).then(() => {
+      const event = new CustomEvent('color-copied', {
+        detail: {
+          color: hex,
+          element: element,
+          message: `Copied ${hex}!`
+        }
+      });
+      document.dispatchEvent(event);
+    });
+  }
+
+  function setupSliderGroup(sliders: HTMLInputElement[], updateFn: () => void) {
+    sliders.forEach(slider => {
+      slider.addEventListener('input', updateFn);
+      slider.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const step = Number.parseFloat(slider.step) || 1;
+        const delta = e.deltaY < 0 ? step : -step;
+        slider.value = (Number.parseFloat(slider.value) + delta).toString();
+        slider.dispatchEvent(new Event('input'));
+      }, { passive: false });
+    });
+  }
+
+  function updatePageContent(hex: string, sourceInputId: string | null = null) {
+    if (!/^#[0-9A-F]{6}$/i.test(hex)) return;
+
+    const isDark = isDarkColor(hex);
+    const contrast = isDark ? '#ffffff' : '#000000';
+    const rgb = hexToRgb(hex);
+    const hsl = hexToHsl(hex).replace(/\s+/g, '');
+    const rawCmyk = getRawCmyk(hex);
+    const rawOklch = getRawOklch(hex);
+    const cmyk = `cmyk(${rawCmyk.c}%, ${rawCmyk.m}%, ${rawCmyk.y}%, ${rawCmyk.k}%)`;
+    const oklch = `oklch(${rawOklch.l}%, ${rawOklch.c}, ${rawOklch.h})`;
+    const shades = generateShades(hex);
+    const tints = generateTints(hex).reverse();
+
+    const rawRgb = getRawRgb(hex);
+    const rawHsl = getRawHsl(hex);
+
+    const whiteRatio = getContrastRatio(hex, '#ffffff');
+    const blackRatio = getContrastRatio(hex, '#000000');
+    const whiteWCAG = getWCAGRating(whiteRatio);
+    const blackWCAG = getWCAGRating(blackRatio);
+
+    detailHeader.style.backgroundColor = hex;
+    detailHeader.style.color = contrast;
+    
+    if (sourceInputId !== 'color-input') colorInput.value = hex;
+    if (sourceInputId !== 'rgb-input') rgbInput.value = rgb;
+    if (sourceInputId !== 'hsl-input') hslInput.value = hsl;
+    cmykInput.value = cmyk;
+    oklchInput.value = oklch;
+
+    if (sourceInputId !== 'slider-r') sliderR.value = rawRgb.r.toString();
+    if (sourceInputId !== 'slider-g') sliderG.value = rawRgb.g.toString();
+    if (sourceInputId !== 'slider-b') sliderB.value = rawRgb.b.toString();
+    if (sourceInputId !== 'slider-h') sliderH.value = rawHsl.h.toString();
+    if (sourceInputId !== 'slider-s') sliderS.value = rawHsl.s.toString();
+    if (sourceInputId !== 'slider-l') sliderL.value = rawHsl.l.toString();
+
+    if (sourceInputId !== 'slider-c') sliderC.value = rawCmyk.c.toString();
+    if (sourceInputId !== 'slider-m') sliderM.value = rawCmyk.m.toString();
+    if (sourceInputId !== 'slider-y') sliderY.value = rawCmyk.y.toString();
+    if (sourceInputId !== 'slider-k') sliderK.value = rawCmyk.k.toString();
+    
+    if (sourceInputId !== 'slider-ok-l') sliderOkL.value = rawOklch.l.toString();
+    if (sourceInputId !== 'slider-ok-c') sliderOkC.value = rawOklch.c.toString();
+    if (sourceInputId !== 'slider-ok-h') sliderOkH.value = rawOklch.h.toString();
+
+    sliderR.style.background = `linear-gradient(to right, rgb(0, ${rawRgb.g}, ${rawRgb.b}), rgb(255, ${rawRgb.g}, ${rawRgb.b}))`;
+    sliderG.style.background = `linear-gradient(to right, rgb(${rawRgb.r}, 0, ${rawRgb.b}), rgb(${rawRgb.r}, 255, ${rawRgb.b}))`;
+    sliderB.style.background = `linear-gradient(to right, rgb(${rawRgb.r}, ${rawRgb.g}, 0), rgb(${rawRgb.r}, ${rawRgb.g}, 255))`;
+    
+    sliderS.style.background = `linear-gradient(to right, hsl(${rawHsl.h}, 0%, ${rawHsl.l}%), hsl(${rawHsl.h}, 100%, ${rawHsl.l}%))`;
+    sliderL.style.background = `linear-gradient(to right, #000, hsl(${rawHsl.h}, ${rawHsl.s}%, 50%), #fff)`;
+
+    colorInput.style.color = contrast;
+    rgbInput.style.color = contrast;
+    hslInput.style.color = contrast;
+    cmykInput.style.color = contrast;
+    oklchInput.style.color = contrast;
+    backLink.style.color = contrast;
+    randomBtn.style.color = contrast;
+
+    if (accessCheck) {
+      accessCheck.innerHTML = `
+        <div class="contrast-item">
+          <span class="info-icon" data-tooltip="Contrast ratio against white background. WCAG AA requires 4.5:1 for normal text.">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          <span class="label">vs White:</span>
+          <span class="ratio">${whiteRatio.toFixed(2)}:1</span>
+          <div class="badges">
+            <span class="badge ${whiteWCAG.AA ? 'pass' : 'fail'}">AA</span>
+            <span class="badge ${whiteWCAG.AAA ? 'pass' : 'fail'}">AAA</span>
+          </div>
+        </div>
+        <div class="contrast-item">
+          <span class="info-icon" data-tooltip="Contrast ratio against black background. WCAG AA requires 4.5:1 for normal text.">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          <span class="label">vs Black:</span>
+          <span class="ratio">${blackRatio.toFixed(2)}:1</span>
+          <div class="badges">
+            <span class="badge ${blackWCAG.AA ? 'pass' : 'fail'}">AA</span>
+            <span class="badge ${blackWCAG.AAA ? 'pass' : 'fail'}">AAA</span>
+          </div>
+        </div>
+      `;
+    }
+
+    tintsGrid.innerHTML = '';
+    tints.forEach(tint => tintsGrid.appendChild(createColorCard(tint)));
+
+    shadesGrid.innerHTML = '';
+    shades.forEach(shade => shadesGrid.appendChild(createColorCard(shade)));
+
+    const harmonies = getColorHarmonies(hex);
+    harmoniesGrid.innerHTML = '';
+    
+    Object.entries(harmonies).forEach(([type, colors]) => {
+      const group = document.createElement('div');
+      group.className = 'harmony-group';
+      
+      const label = document.createElement('span');
+      label.className = 'harmony-label';
+      label.textContent = type.replace(/([A-Z])/g, ' $1').trim();
+      
+      const colorsContainer = document.createElement('div');
+      colorsContainer.className = 'harmony-colors';
+      
+      colors.forEach(c => colorsContainer.appendChild(createColorCard(c)));
+      
+      group.appendChild(label);
+      group.appendChild(colorsContainer);
+      harmoniesGrid.appendChild(group);
+    });
+
+    const palette = {
+      50: tints[0],
+      100: tints[2],
+      200: tints[4],
+      300: tints[6],
+      400: tints[8],
+      500: hex,
+      600: shades[0],
+      700: shades[2],
+      800: shades[4],
+      900: shades[6],
+      950: shades[8],
+    };
+
+    copyCssBtn.onclick = () => {
+      let css = `:root {\n`;
+      Object.entries(palette).forEach(([key, val]) => {
+        css += `  --color-primary-${key}: ${val};\n`;
+      });
+      css += `}`;
+      navigator.clipboard.writeText(css).then(() => {
+        const event = new CustomEvent('color-copied', {
+          detail: { color: hex, message: 'CSS Variables copied!' }
+        });
+        document.dispatchEvent(event);
+      });
+    };
+
+    copyTwBtn.onclick = () => {
+      let config = `primary: {\n`;
+      Object.entries(palette).forEach(([key, val]) => {
+        config += `  ${key}: '${val}',\n`;
+      });
+      config += `}`;
+      navigator.clipboard.writeText(config).then(() => {
+        const event = new CustomEvent('color-copied', {
+          detail: { color: hex, message: 'Tailwind Config copied!' }
+        });
+        document.dispatchEvent(event);
+      });
+    };
+
+    const pureHex = hex.substring(1);
+    window.history.replaceState({}, '', `/color/${pureHex}`);
+    document.title = `Color ${hex} - Shades & Tints`;
+  }
+
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const sections = [
+    document.getElementById('detail-header'),
+    document.getElementById('harmonies-section'),
+    document.getElementById('tints-section'),
+    document.getElementById('shades-section')
+  ];
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-20% 0px -70% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${entry.target.id}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(section => {
+    if (section) observer.observe(section);
+  });
+
+  let animationFrame: number | null = null;
+  function animateToColor(targetHex: string) {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    
+    const startRgb = getRawRgb(colorInput.value);
+    const endRgb = getRawRgb(targetHex);
+    const duration = 1500; // Slower, cinematic duration
+    const startTime = performance.now();
+
+    function step(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easing = progress < 0.5 
+        ? 4 * progress * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      
+      const r = Math.round(startRgb.r + (endRgb.r - startRgb.r) * easing);
+      const g = Math.round(startRgb.g + (endRgb.g - startRgb.g) * easing);
+      const b = Math.round(startRgb.b + (endRgb.b - startRgb.b) * easing);
+      
+      const currentHex = rgbToHex(r, g, b);
+      updatePageContent(currentHex);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(step);
+      }
+    }
+    
+    animationFrame = requestAnimationFrame(step);
+  }
+
+  randomBtn?.addEventListener('click', () => {
+    const randomHex = getRandomHex();
+    animateToColor(randomHex);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    if (e.key === ' ' || e.code === 'Space') {
+      e.preventDefault();
+      const randomHex = getRandomHex();
+      animateToColor(randomHex);
+    }
+  });
+
+  updatePageContent(colorInput.value);
+
+  colorInput?.addEventListener('input', (e) => {
+    let value = (e.target as HTMLInputElement).value;
+    if (!value.startsWith('#') && value.length > 0) value = '#' + value;
+    if (value.length > 7) value = value.substring(0, 7);
+    colorInput.value = value;
+    
+    if (value.length === 7) {
+      updatePageContent(value.toUpperCase(), 'color-input');
+    }
+  });
+
+  rgbInput?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value;
+    const match = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/i);
+    if (match) {
+      const r = Math.min(255, Math.max(0, Number.parseInt(match[1])));
+      const g = Math.min(255, Math.max(0, Number.parseInt(match[2])));
+      const b = Math.min(255, Math.max(0, Number.parseInt(match[3])));
+      updatePageContent(rgbToHex(r, g, b), 'rgb-input');
+    }
+  });
+
+  hslInput?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value;
+    const match = value.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/i);
+    if (match) {
+      const h = Math.min(360, Math.max(0, Number.parseInt(match[1])));
+      const s = Math.min(100, Math.max(0, Number.parseInt(match[2])));
+      const l = Math.min(100, Math.max(0, Number.parseInt(match[3])));
+      updatePageContent(hslToHex(h, s, l), 'hsl-input');
+    }
+  });
+
+  setupSliderGroup([sliderR, sliderG, sliderB], () => {
+    updatePageContent(rgbToHex(Number.parseInt(sliderR.value), Number.parseInt(sliderG.value), Number.parseInt(sliderB.value)), 'slider-rgb');
+  });
+
+  setupSliderGroup([sliderH, sliderS, sliderL], () => {
+    updatePageContent(hslToHex(Number.parseInt(sliderH.value), Number.parseInt(sliderS.value), Number.parseInt(sliderL.value)), 'slider-hsl');
+  });
+
+  setupSliderGroup([sliderC, sliderM, sliderY, sliderK], () => {
+    updatePageContent(cmykToHex(Number.parseInt(sliderC.value), Number.parseInt(sliderM.value), Number.parseInt(sliderY.value), Number.parseInt(sliderK.value)), 'slider-cmyk');
+  });
+
+  setupSliderGroup([sliderOkL, sliderOkC, sliderOkH], () => {
+    updatePageContent(oklchToHex(Number.parseFloat(sliderOkL.value), Number.parseFloat(sliderOkC.value), Number.parseFloat(sliderOkH.value)), 'slider-oklch');
+  });
+
+  document.body.addEventListener('click', (e) => {
+    const card = (e.target as HTMLElement).closest('.color-card');
+    if (card) {
+      const hex = card.getAttribute('data-hex');
+      if (hex) copyToClipboard(hex, card as HTMLElement);
+    }
+  });
+</script>
