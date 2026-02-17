@@ -37,6 +37,7 @@
   const copyMsg = document.getElementById('copy-message') as HTMLElement;
 
   let lastRightClickedColor: string = '';
+  let lastRightClickedElement: HTMLElement | null = null;
 
   function hexToRgb(hex: string): string {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -93,6 +94,7 @@
         if (!hex) return;
 
         lastRightClickedColor = hex;
+        lastRightClickedElement = colorBox;
 
         if (menuPreviewColor) menuPreviewColor.style.backgroundColor = hex;
         if (menuColorName) menuColorName.textContent = name;
@@ -143,6 +145,15 @@
 
       navigator.clipboard.writeText(textToCopy).then(() => {
         showCopyMessage(`Copied ${format?.toUpperCase()}!`);
+        
+        // Dispatch event for parent to handle UI updates
+        const event = new CustomEvent('color-copied', {
+          detail: {
+            color: lastRightClickedColor,
+            element: lastRightClickedElement
+          }
+        });
+        document.dispatchEvent(event);
       });
     });
   }

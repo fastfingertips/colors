@@ -286,6 +286,17 @@ import ContextMenu from '../components/ContextMenu.astro';
 		}
 	});
 
+	// Listen for custom event from ContextMenu component
+	document.addEventListener('color-copied', ((e: CustomEvent) => {
+		const { color, element } = e.detail;
+		if (element) {
+			highlightColorBox(element);
+		}
+		if (color) {
+			updateFavicon(color);
+		}
+	}) as EventListener);
+
 	toggleInfo?.addEventListener('click', () => {
 		const isActive = toggleInfo.classList.contains('active');
 		if (isActive) {
