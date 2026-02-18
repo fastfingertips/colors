@@ -331,10 +331,14 @@ h1 {
 }
 
 .color-container.no-gap .color-box.rounded {
-  z-index: 5;
-  border-radius: var(--radius-sm);
-  transform: scale(0.85);
-  box-shadow: 0 0 0 4px var(--surface-color), var(--shadow-sm);
+  z-index: 50;
+  border-radius: 50%;
+  transform: scale(0.8);
+  box-shadow: 
+    inset 0 2px 4px rgba(0,0,0,0.1),
+    0 0 0 4px var(--bg-color),
+    0 0 20px rgba(0,0,0,0.15);
+  outline: none;
 }
 
 .color-container.show-info .color-info {
@@ -352,6 +356,50 @@ h1 {
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-sm);
   will-change: transform, box-shadow;
+}
+
+.random-box {
+  background: var(--surface-color);
+  background: linear-gradient(135deg, var(--surface-color) 0%, var(--border-color) 100%);
+  border: 1px dashed var(--text-color);
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.random-box .color-box-content {
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.color-container.compact .random-box .color-box-content {
+  gap: 4px;
+}
+
+.color-container.compact .random-box .color-name {
+  font-size: 0.75rem;
+}
+
+.color-container.compact .random-box svg {
+  width: 18px;
+  height: 18px;
+}
+
+.random-box .random-icon {
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.random-box:hover .random-icon {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+.random-box:hover {
+  background: var(--text-color);
+  color: var(--bg-color);
+  border-style: solid;
+  opacity: 1;
 }
 
 .color-box {
@@ -439,8 +487,13 @@ h1 {
 }
 
 .color-box.rounded {
-  border-radius: var(--radius-sm);
-  transform: scale(0.9);
+  z-index: 50;
+  border-radius: 50% !important;
+  transform: scale(0.8);
+  box-shadow: 
+    inset 0 2px 6px rgba(0,0,0,0.15),
+    0 0 0 4px var(--bg-color),
+    0 0 20px rgba(0,0,0,0.15);
 }
 
 .color-info {

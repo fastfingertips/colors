@@ -46,7 +46,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 							<path d="M4 9v2" stroke-width="1"></path>
 						</svg>
 					</span> 
-					<span class="action-text">toggle view</span>
+					<span class="action-text">randomize</span>
 				</span>
 			</div>
 		</div>
@@ -73,36 +73,32 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 <script>
 	import { isDarkColor } from '../utils/colorUtils';
 
-	// State Management
 	const state = {
 		colors: [],
 		filter: 'all',
 		gridSize: 'comfortable'
 	};
 
-	// DOM Elements
-	const container = document.getElementById('color-container') as HTMLElement;
-	const colorCount = document.getElementById('color-count') as HTMLElement;
-	const filterIndicator = document.getElementById('menu-indicator') as HTMLElement;
-	const gridIndicator = document.getElementById('grid-indicator') as HTMLElement;
+	const container = document.getElementById('color-container');
+	const colorCount = document.getElementById('color-count');
+	const filterIndicator = document.getElementById('menu-indicator');
+	const gridIndicator = document.getElementById('grid-indicator');
 	
-	// Buttons
 	const filterBtns = {
-		all: document.getElementById('all-button') as HTMLButtonElement,
-		dark: document.getElementById('dark-button') as HTMLButtonElement,
-		light: document.getElementById('light-button') as HTMLButtonElement
+		all: document.getElementById('all-button'),
+		dark: document.getElementById('dark-button'),
+		light: document.getElementById('light-button')
 	};
 
 	const gridBtns = {
-		compact: document.getElementById('grid-compact') as HTMLButtonElement,
-		comfortable: document.getElementById('grid-comfortable') as HTMLButtonElement,
-		large: document.getElementById('grid-large') as HTMLButtonElement
+		compact: document.getElementById('grid-compact'),
+		comfortable: document.getElementById('grid-comfortable'),
+		large: document.getElementById('grid-large')
 	};
 
-	const toggleGap = document.getElementById('toggle-gap') as HTMLButtonElement;
-	const toggleInfo = document.getElementById('toggle-info') as HTMLButtonElement;
+	const toggleGap = document.getElementById('toggle-gap');
+	const toggleInfo = document.getElementById('toggle-info');
 
-	// Initialize
 	function init() {
 		colorCount.innerHTML = '<span class="loading-pulse">Loading colors...</span>';
 		container.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
@@ -153,14 +149,28 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 			container.classList.toggle('show-info');
 		});
 
-		// Window Events
 		window.addEventListener('resize', updateIndicators);
-		document.addEventListener('keydown', (e) => {
-			if (e.code === 'Space') {
-				e.preventDefault();
-				toggleGap?.click();
+		
+		// Visual Feedback for Copying
+		document.addEventListener('color-copied', (e) => {
+			const el = e.detail.element;
+			if (el) {
+				// Remove rounded class from all other boxes
+				document.querySelectorAll('.color-box.rounded, .color-card.rounded').forEach(box => {
+					box.classList.remove('rounded');
+				});
+				// Add to current one
+				el.classList.add('rounded');
 			}
 		});
+
+		document.addEventListener('keydown', (e) => {
+		if (e.code === 'Space') {
+			e.preventDefault();
+			const randomBtn = document.querySelector('.random-box');
+			randomBtn?.click();
+		}
+	});
 	}
 
 	function updateUI() {
@@ -198,6 +208,44 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 
 	function renderColors() {
 		container.innerHTML = '';
+		
+		const randomBox = document.createElement('div');
+		randomBox.className = 'color-box random-box';
+		randomBox.dataset.brightness = 'all'; // Special case to show in all filters or manage below
+		
+		randomBox.innerHTML = `
+			<div class="color-box-content">
+				<div class="random-icon">
+					<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M16 3h5v5"></path>
+						<path d="M4 20L21 3"></path>
+						<path d="M21 16v5h-5"></path>
+						<path d="M15 15l6 6"></path>
+						<path d="M4 4l5 5"></path>
+					</svg>
+				</div>
+				<div class="color-info" style="opacity: 1;">
+					<span class="color-name">Lucky Pick</span>
+					<span class="color-hex">Randomize</span>
+				</div>
+			</div>
+		`;
+
+		randomBox.onclick = () => {
+			const visibleBoxes = Array.from(container.querySelectorAll('.color-box:not(.random-box)'))
+				.filter(b => b.style.display !== 'none');
+			
+			if (visibleBoxes.length === 0) return;
+			
+			const randomElement = visibleBoxes[Math.floor(Math.random() * visibleBoxes.length)];
+			randomElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			
+			setTimeout(() => {
+				randomElement.click();
+			}, 1000);
+		};
+		container.appendChild(randomBox);
+
 		const staggerDelay = state.colors.length > 100 ? 5 : 15;
 
 		state.colors.forEach((color, index) => {
@@ -230,9 +278,19 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 				</div>
 			`;
 
-			colorBox.onclick = () => {
-				const pureHex = color.hex_code.substring(1);
-				window.location.href = `/color/${pureHex}`;
+			colorBox.onclick = (e) => {
+				e.stopPropagation();
+				const hex = color.hex_code;
+				navigator.clipboard.writeText(hex);
+				
+				// Dispatch event for visual feedback (toast/favicon/etc)
+				document.dispatchEvent(new CustomEvent('color-copied', { 
+					detail: { 
+						color: hex, 
+						element: colorBox, 
+						message: `Copied ${hex}` 
+					} 
+				}));
 			};
 
 			container.appendChild(colorBox);
@@ -253,7 +311,12 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 		const boxes = container.querySelectorAll('.color-box');
 		let visibleCount = 0;
 
-		boxes.forEach((box: any) => {
+		boxes.forEach((box) => {
+			if (box.classList.contains('random-box')) {
+				box.style.display = '';
+				visibleCount++;
+				return;
+			}
 			const brightness = box.dataset.brightness;
 			const shouldShow = state.filter === 'all' || state.filter === brightness;
 

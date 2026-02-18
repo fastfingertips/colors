@@ -988,19 +988,19 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 <script>
   import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, rgbToHex, hslToHex, getRawRgb, getRawHsl, getRandomHex, getColorHarmonies, getRawCmyk, getRawOklch, cmykToHex, oklchToHex } from '../../utils/colorUtils';
 
-  const colorInput = document.getElementById('color-input') as HTMLInputElement;
-  const rgbInput = document.getElementById('rgb-input') as HTMLInputElement;
-  const hslInput = document.getElementById('hsl-input') as HTMLInputElement;
-  const cmykInput = document.getElementById('cmyk-input') as HTMLInputElement;
-  const oklchInput = document.getElementById('oklch-input') as HTMLInputElement;
-  const randomBtn = document.getElementById('random-btn') as HTMLButtonElement;
-  const tintsGrid = document.getElementById('tints-grid') as HTMLElement;
-  const shadesGrid = document.getElementById('shades-grid') as HTMLElement;
-  const harmoniesGrid = document.getElementById('harmonies-grid') as HTMLElement;
-  const accessCheck = document.getElementById('accessibility-check') as HTMLElement;
-  const copyCssBtn = document.getElementById('copy-css-btn') as HTMLButtonElement;
-  const copyTwBtn = document.getElementById('copy-tw-btn') as HTMLButtonElement;
-  const colorEditorCard = document.querySelector('.color-editor-card') as HTMLElement;
+  const colorInput = document.getElementById('color-input');
+  const rgbInput = document.getElementById('rgb-input');
+  const hslInput = document.getElementById('hsl-input');
+  const cmykInput = document.getElementById('cmyk-input');
+  const oklchInput = document.getElementById('oklch-input');
+  const randomBtn = document.getElementById('random-btn');
+  const tintsGrid = document.getElementById('tints-grid');
+  const shadesGrid = document.getElementById('shades-grid');
+  const harmoniesGrid = document.getElementById('harmonies-grid');
+  const accessCheck = document.getElementById('accessibility-check');
+  const copyCssBtn = document.getElementById('copy-css-btn');
+  const copyTwBtn = document.getElementById('copy-tw-btn');
+  const colorEditorCard = document.querySelector('.color-editor-card');
 
   const copyIconSVG = `
     <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1009,21 +1009,21 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     </svg>
   `;
 
-  const sliderR = document.getElementById('slider-r') as HTMLInputElement;
-  const sliderG = document.getElementById('slider-g') as HTMLInputElement;
-  const sliderB = document.getElementById('slider-b') as HTMLInputElement;
-  const sliderH = document.getElementById('slider-h') as HTMLInputElement;
-  const sliderS = document.getElementById('slider-s') as HTMLInputElement;
-  const sliderL = document.getElementById('slider-l') as HTMLInputElement;
-  const sliderC = document.getElementById('slider-c') as HTMLInputElement;
-  const sliderM = document.getElementById('slider-m') as HTMLInputElement;
-  const sliderY = document.getElementById('slider-y') as HTMLInputElement;
-  const sliderK = document.getElementById('slider-k') as HTMLInputElement;
-  const sliderOkL = document.getElementById('slider-ok-l') as HTMLInputElement;
-  const sliderOkC = document.getElementById('slider-ok-c') as HTMLInputElement;
-  const sliderOkH = document.getElementById('slider-ok-h') as HTMLInputElement;
+  const sliderR = document.getElementById('slider-r');
+  const sliderG = document.getElementById('slider-g');
+  const sliderB = document.getElementById('slider-b');
+  const sliderH = document.getElementById('slider-h');
+  const sliderS = document.getElementById('slider-s');
+  const sliderL = document.getElementById('slider-l');
+  const sliderC = document.getElementById('slider-c');
+  const sliderM = document.getElementById('slider-m');
+  const sliderY = document.getElementById('slider-y');
+  const sliderK = document.getElementById('slider-k');
+  const sliderOkL = document.getElementById('slider-ok-l');
+  const sliderOkC = document.getElementById('slider-ok-c');
+  const sliderOkH = document.getElementById('slider-ok-h');
 
-  function createColorCard(hex: string) {
+  function createColorCard(hex) {
     const isDark = isDarkColor(hex);
     const card = document.createElement('div');
     card.className = 'color-card';
@@ -1040,7 +1040,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     return card;
   }
 
-  function copyToClipboard(hex: string, element?: HTMLElement) {
+  function copyToClipboard(hex, element) {
     navigator.clipboard.writeText(hex).then(() => {
       const event = new CustomEvent('color-copied', {
         detail: {
@@ -1053,7 +1053,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     });
   }
 
-  function setupSliderGroup(sliders: HTMLInputElement[], updateFn: (sourceId: string) => void) {
+  function setupSliderGroup(sliders, updateFn) {
     sliders.forEach(slider => {
       const triggerUpdate = () => updateFn(slider.id);
       
@@ -1077,7 +1077,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     });
   }
 
-  function updatePageContent(hex: string, sourceInputId: string | null = null) {
+  function updatePageContent(hex, sourceInputId = null) {
     if (!/^#[0-9A-F]{6}$/i.test(hex)) return;
 
     const isDark = isDarkColor(hex);
@@ -1239,7 +1239,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     window.history.replaceState({}, '', `/color/${pureHex}`);
     document.title = `Color ${hex}`;
 
-    const stickyHex = document.getElementById('sticky-hex') as HTMLInputElement;
+    const stickyHex = document.getElementById('sticky-hex');
     const stickySwatch = document.getElementById('sticky-swatch');
     if (stickyHex && sourceInputId !== 'sticky-hex') stickyHex.value = hex;
     if (stickySwatch) stickySwatch.style.backgroundColor = hex;
@@ -1293,16 +1293,15 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     if (section) observer.observe(section);
   });
 
-  let animationFrame: number | null = null;
-  function animateToColor(targetHex: string) {
+  let animationFrame = null;
+  function animateToColor(targetHex) {
     if (animationFrame) cancelAnimationFrame(animationFrame);
-    
     const startRgb = getRawRgb(colorInput.value);
     const endRgb = getRawRgb(targetHex);
     const duration = 1500;
     const startTime = performance.now();
 
-    function step(currentTime: number) {
+    function step(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
@@ -1345,7 +1344,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   updatePageContent(colorInput.value);
 
   colorInput?.addEventListener('input', (e) => {
-    let value = (e.target as HTMLInputElement).value;
+    let value = e.target.value;
     if (!value.startsWith('#') && value.length > 0) value = '#' + value;
     if (value.length > 7) value = value.substring(0, 7);
     colorInput.value = value;
@@ -1355,9 +1354,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     }
   });
 
-  const stickyHexInput = document.getElementById('sticky-hex') as HTMLInputElement;
+  const stickyHexInput = document.getElementById('sticky-hex');
   stickyHexInput?.addEventListener('input', (e) => {
-    let value = (e.target as HTMLInputElement).value;
+    let value = e.target.value;
     if (!value.startsWith('#') && value.length > 0) value = '#' + value;
     if (value.length > 7) value = value.substring(0, 7);
     stickyHexInput.value = value;
@@ -1368,7 +1367,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   rgbInput?.addEventListener('input', (e) => {
-    const value = (e.target as HTMLInputElement).value;
+    const value = e.target.value;
     const match = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/i);
     if (match) {
       const r = Math.min(255, Math.max(0, Number.parseInt(match[1])));
@@ -1379,7 +1378,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   hslInput?.addEventListener('input', (e) => {
-    const value = (e.target as HTMLInputElement).value;
+    const value = e.target.value;
     const match = value.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/i);
     if (match) {
       const h = Math.min(360, Math.max(0, Number.parseInt(match[1])));
@@ -1406,10 +1405,20 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   document.body.addEventListener('click', (e) => {
-    const card = (e.target as HTMLElement).closest('.color-card');
+    const card = e.target.closest('.color-card');
     if (card) {
       const hex = card.getAttribute('data-hex');
-      if (hex) copyToClipboard(hex, card as HTMLElement);
+      if (hex) copyToClipboard(hex, card);
+    }
+  });
+
+  document.addEventListener('color-copied', (e) => {
+    const el = e.detail.element;
+    if (el) {
+      document.querySelectorAll('.color-box.rounded, .color-card.rounded').forEach(box => {
+        box.classList.remove('rounded');
+      });
+      el.classList.add('rounded');
     }
   });
 </script>
