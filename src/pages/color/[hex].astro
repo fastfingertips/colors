@@ -78,7 +78,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     <div class="color-editor-card" id="overview" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
           <div class="main-hex-section">
             <div class="info-wrapper">
-              <button class="copy-trigger" title="Copy HEX" data-copy-target="color-input">
+              <button class="mini-copy-btn" title="Copy HEX" data-copy-target="color-input">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -100,7 +100,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
-                  <button class="copy-trigger" title="Copy RGB" data-copy-target="rgb-input">
+                  <button class="mini-copy-btn" title="Copy RGB" data-copy-target="rgb-input">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -132,7 +132,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
-                  <button class="copy-trigger" title="Copy HSL" data-copy-target="hsl-input">
+                  <button class="mini-copy-btn" title="Copy HSL" data-copy-target="hsl-input">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -164,7 +164,11 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+<<<<<<< HEAD
                   <button class="copy-trigger" title="Copy CMYK" data-copy-target="cmyk-input">
+=======
+                  <button class="mini-copy-btn" title="Copy CMYK" data-copy-target="cmyk-input">
+>>>>>>> cd05b6f (feat(ui): add mini copy buttons to color profile info area)
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -200,7 +204,11 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+<<<<<<< HEAD
                   <button class="copy-trigger" title="Copy OKLCH" data-copy-target="oklch-input">
+=======
+                  <button class="mini-copy-btn" title="Copy OKLCH" data-copy-target="oklch-input">
+>>>>>>> cd05b6f (feat(ui): add mini copy buttons to color profile info area)
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -709,7 +717,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
   .info-icon {
     cursor: help;
-    opacity: 0.3;
+    opacity: 0.15;
     transition: opacity 0.2s;
     display: flex;
     align-items: center;
@@ -717,11 +725,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     position: relative;
   }
 
-  .info-icon:hover {
-    opacity: 1;
-  }
-
-  .copy-trigger {
+  .mini-copy-btn {
     cursor: pointer;
     opacity: 0.15;
     transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
@@ -735,19 +739,26 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     color: inherit;
   }
 
-  .info-wrapper:hover .copy-trigger {
+  .info-wrapper:hover .mini-copy-btn,
+  .info-wrapper:hover .info-icon {
     opacity: 0.5;
   }
 
-  .copy-trigger:hover {
+  .mini-copy-btn:hover,
+  .info-icon:hover {
     opacity: 1 !important;
+  }
+
+  .mini-copy-btn:hover {
     background: var(--button-hover);
     transform: scale(1.1);
   }
 
-  .copy-trigger:active {
+  .mini-copy-btn:active {
     transform: scale(0.9);
   }
+
+
 
   .info-icon::after {
     content: attr(data-tooltip);
@@ -1467,6 +1478,16 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
       const hex = card.getAttribute('data-hex');
       if (hex) copyToClipboard(hex, card);
       return;
+<<<<<<< HEAD
+=======
+    }
+
+    const copyBtn = e.target.closest('.mini-copy-btn');
+    if (copyBtn) {
+      const targetId = copyBtn.getAttribute('data-copy-target');
+      const input = document.getElementById(targetId);
+      if (input) copyToClipboard(input.value);
+>>>>>>> cd05b6f (feat(ui): add mini copy buttons to color profile info area)
     }
 
     const copyTrigger = e.target.closest('.copy-trigger');
