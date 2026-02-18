@@ -321,6 +321,7 @@ h1 {
   border: none;
   box-shadow: none;
   z-index: 1;
+  outline: 1px solid var(--current-hex);
 }
 
 .color-container.no-gap .color-box:hover {

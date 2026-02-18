@@ -70,13 +70,14 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 	</main>
 </Layout>
 
+<script>
 	import { isDarkColor } from '../utils/colorUtils';
 
 	// State Management
 	const state = {
-		colors: [] as any[],
-		filter: 'all' as 'all' | 'dark' | 'light',
-		gridSize: 'comfortable' as 'compact' | 'comfortable' | 'large'
+		colors: [],
+		filter: 'all',
+		gridSize: 'comfortable'
 	};
 
 	// DOM Elements
@@ -126,7 +127,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 		Object.entries(filterBtns).forEach(([key, btn]) => {
 			btn?.addEventListener('click', () => {
 				if (state.filter === key) return;
-				state.filter = key as any;
+				state.filter = key;
 				updateUI();
 				filterColors();
 			});
@@ -136,7 +137,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 		Object.entries(gridBtns).forEach(([key, btn]) => {
 			btn?.addEventListener('click', () => {
 				if (state.gridSize === key) return;
-				state.gridSize = key as any;
+				state.gridSize = key;
 				updateUI();
 			});
 		});
@@ -211,6 +212,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 
 			// Set properties
 			colorBox.style.setProperty('--card-rgb', `${r}, ${g}, ${b}`);
+			colorBox.style.setProperty('--current-hex', color.hex_code);
 			colorBox.style.backgroundColor = color.hex_code;
 			colorBox.style.animationDelay = `${index * staggerDelay}ms`;
 			colorBox.style.color = isDark ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)';
