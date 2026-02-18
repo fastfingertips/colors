@@ -78,6 +78,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     <div class="color-editor-card" id="overview" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
           <div class="main-hex-section">
             <div class="info-wrapper">
+              <button class="copy-trigger" title="Copy HEX" data-copy-target="color-input">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
               <span class="info-icon" data-tooltip="Main color hex code. Edit to change the base color.">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               </span>
@@ -89,12 +95,17 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               spellcheck="false"
               maxlength="7"
             />
-          </div>
 
           <div class="editor-grid">
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+                  <button class="copy-trigger" title="Copy RGB" data-copy-target="rgb-input">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
                   <span class="info-icon" data-tooltip="Red, Green, Blue color model. Values 0-255.">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </span>
@@ -121,6 +132,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+                  <button class="copy-trigger" title="Copy HSL" data-copy-target="hsl-input">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
                   <span class="info-icon" data-tooltip="Hue, Saturation, Lightness. H: 0-360, S: 0-100%, L: 0-100%.">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </span>
@@ -147,6 +164,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+                  <button class="copy-trigger" title="Copy CMYK" data-copy-target="cmyk-input">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
                   <span class="info-icon" data-tooltip="Cyan, Magenta, Yellow, Key (Black). Standard for print.">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </span>
@@ -177,6 +200,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
             <div class="color-space-block">
               <div class="value-input-group">
                 <div class="info-wrapper">
+                  <button class="copy-trigger" title="Copy OKLCH" data-copy-target="oklch-input">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
                   <span class="info-icon" data-tooltip="Perceptual Lightness, Chroma, Hue. Modern color space for consistent perceived lightness.">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                   </span>
@@ -362,7 +391,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   #color-input {
     background: transparent;
     border: none;
-    font-size: 3.5rem;
+    font-size: 4.5rem;
     font-weight: 900;
     text-align: center;
     width: 100%;
@@ -531,7 +560,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   }
 
   .value-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
     opacity: 0.5;
     text-transform: uppercase;
@@ -543,7 +572,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     background: transparent;
     border: none;
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     outline: none;
     color: inherit;
@@ -552,6 +581,10 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
+  }
+
+  .value-input-group:hover {
+    background: var(--button-hover);
   }
 
   .sliders-column {
@@ -669,6 +702,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     top: 10px;
     right: 10px;
     z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .info-icon {
@@ -683,6 +719,34 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
   .info-icon:hover {
     opacity: 1;
+  }
+
+  .copy-trigger {
+    cursor: pointer;
+    opacity: 0.15;
+    transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    color: inherit;
+  }
+
+  .info-wrapper:hover .copy-trigger {
+    opacity: 0.5;
+  }
+
+  .copy-trigger:hover {
+    opacity: 1 !important;
+    background: var(--button-hover);
+    transform: scale(1.1);
+  }
+
+  .copy-trigger:active {
+    transform: scale(0.9);
   }
 
   .info-icon::after {
@@ -1002,12 +1066,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   const copyTwBtn = document.getElementById('copy-tw-btn');
   const colorEditorCard = document.querySelector('.color-editor-card');
 
-  const copyIconSVG = `
-    <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-    </svg>
-  `;
 
   const sliderR = document.getElementById('slider-r');
   const sliderG = document.getElementById('slider-g');
@@ -1033,7 +1091,6 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     card.innerHTML = `
       <div class="card-overlay" style="color: ${isDark ? '#fff' : '#000'}">
         <span class="hex-label">${hex}</span>
-        ${copyIconSVG}
       </div>
     `;
     
@@ -1409,16 +1466,19 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     if (card) {
       const hex = card.getAttribute('data-hex');
       if (hex) copyToClipboard(hex, card);
+      return;
     }
+
+    const copyTrigger = e.target.closest('.copy-trigger');
+    if (copyTrigger) {
+      const targetId = copyTrigger.getAttribute('data-copy-target');
+      const input = document.getElementById(targetId);
+      if (input) {
+        copyToClipboard(input.value);
+      }
+      return;
+    }
+
   });
 
-  document.addEventListener('color-copied', (e) => {
-    const el = e.detail.element;
-    if (el) {
-      document.querySelectorAll('.color-box.rounded, .color-card.rounded').forEach(box => {
-        box.classList.remove('rounded');
-      });
-      el.classList.add('rounded');
-    }
-  });
 </script>

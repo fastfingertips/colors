@@ -377,7 +377,7 @@ h1 {
 }
 
 .color-container.compact .random-box .color-name {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
 }
 
 .color-container.compact .random-box svg {
@@ -514,7 +514,7 @@ h1 {
 
 .color-name {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   letter-spacing: -0.01em;
   text-align: center;
   padding: 0 10px;
@@ -523,7 +523,7 @@ h1 {
 }
 
 .color-hex, .hex-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   opacity: 0.8;
   font-family: var(--font-mono);
   text-transform: uppercase;
