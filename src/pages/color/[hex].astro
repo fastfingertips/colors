@@ -5,8 +5,10 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch, getColorPsychology } from '../../utils/colorUtils';
 import { getCulturalAnalysis } from '../../utils/culturalColorData';
 import { getColorName } from '../../utils/colorNaming';
-import ColorSpaceEditor from '../../components/ColorSpaceEditor.astro';
-import ColorCard from '../../components/ColorCard.astro';
+import ColorSpaceEditor from '../../components/editor/ColorSpaceEditor.astro';
+import ColorCard from '../../components/cards/ColorCard.astro';
+import PsychologyCard from '../../components/cards/PsychologyCard.astro';
+import CultureCard from '../../components/cards/CultureCard.astro';
 
 export const prerender = false;
 
@@ -234,21 +236,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
                 </span>
               </div>
             </div>
-            <div class="psychology-card">
-              <div class="psy-glow" style={`background-color: ${colorHex}`}></div>
-              <div class="psy-content">
-                <div class="psy-main">
-                  <h3 id="psy-name">{psychology.name}</h3>
-                  <div class="tone-tag" id="psy-tone">{psychology.tone}</div>
-                  <div class="emotion-badges" id="emotion-badges">
-                    {psychology.emotions.map(emotion => (
-                      <span class="emotion-badge">{emotion}</span>
-                    ))}
-                  </div>
-                </div>
-                <p class="psy-desc" id="psy-desc">{psychology.description}</p>
-              </div>
-            </div>
+            <PsychologyCard data={psychology} colorHex={colorHex} />
           </section>
 
           <div class="dashboard-divider"></div>
@@ -262,36 +250,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
                 </span>
               </div>
             </div>
-            <div class="culture-card" id="culture-card">
-              <div class="culture-grid">
-                {cultural.notes.map(note => (
-                  <div class={`culture-item culture-${note.sentiment}`}>
-                    <div class="culture-item-header">
-                      <span class="culture-region">{note.region}</span>
-                      {note.sentiment === 'warning' && (
-                        <span class="culture-warn-badge" title="Warning or Taboo">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        </span>
-                      )}
-                    </div>
-                    <p class="culture-meaning">{note.meaning}</p>
-                  </div>
-                ))}
-              </div>
-              {cultural.warnings.length > 0 && (
-                <div class="culture-warnings">
-                  {cultural.warnings.map(w => (
-                    <div class="culture-warning-item">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                      <span>{w}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div class="culture-tip">
-                <strong>Design Tip:</strong> {cultural.designTip}
-              </div>
-            </div>
+            <CultureCard data={cultural} />
           </section>
 
           <div class="dashboard-divider"></div>

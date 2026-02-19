@@ -1,0 +1,28 @@
+---
+interface Props {
+  data: {
+    name: string;
+    tone: string;
+    emotions: string[];
+    description: string;
+  };
+  colorHex: string;
+}
+
+const { data, colorHex } = Astro.props;
+---
+<div class="psychology-card">
+  <div class="psy-glow" style={`background-color: ${colorHex}`}></div>
+  <div class="psy-content">
+    <div class="psy-main">
+      <h3 id="psy-name">{data.name}</h3>
+      <div class="tone-tag" id="psy-tone">{data.tone}</div>
+      <div class="emotion-badges" id="emotion-badges">
+        {data.emotions.map(emotion => (
+          <span class="emotion-badge">{emotion}</span>
+        ))}
+      </div>
+    </div>
+    <p class="psy-desc" id="psy-desc">{data.description}</p>
+  </div>
+</div>
