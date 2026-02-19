@@ -6,6 +6,7 @@ import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getCont
 import { getCulturalAnalysis } from '../../utils/culturalColorData';
 import { getColorName } from '../../utils/colorNaming';
 import ColorSpaceEditor from '../../components/ColorSpaceEditor.astro';
+import ColorCard from '../../components/ColorCard.astro';
 
 export const prerender = false;
 
@@ -322,15 +323,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               </div>
               <div class="grid" id="tints-grid">
                 {tints.map((tint) => (
-                  <div class="color-card" data-hex={tint} style={`background-color: ${tint}`}>
-                    <div class="card-overlay" style={`color: ${isDarkColor(tint) ? '#fff' : '#000'}`}>
-                      <span class="hex-label">{tint}</span>
-                      <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                      </svg>
-                    </div>
-                  </div>
+                  <ColorCard hex={tint} />
                 ))}
               </div>
             </section>
@@ -346,15 +339,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               </div>
               <div class="grid" id="shades-grid">
                 {shades.map((shade) => (
-                  <div class="color-card" data-hex={shade} style={`background-color: ${shade}`}>
-                    <div class="card-overlay" style={`color: ${isDarkColor(shade) ? '#fff' : '#000'}`}>
-                      <span class="hex-label">{shade}</span>
-                      <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                      </svg>
-                    </div>
-                  </div>
+                  <ColorCard hex={shade} />
                 ))}
               </div>
             </section>
