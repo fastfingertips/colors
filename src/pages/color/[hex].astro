@@ -9,6 +9,7 @@ import ColorSpaceEditor from '../../components/editor/ColorSpaceEditor.astro';
 import ColorCard from '../../components/cards/ColorCard.astro';
 import PsychologyCard from '../../components/cards/PsychologyCard.astro';
 import CultureCard from '../../components/cards/CultureCard.astro';
+import AccessibilityCheck from '../../components/editor/AccessibilityCheck.astro';
 
 export const prerender = false;
 
@@ -162,30 +163,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
         </div>
 
 
-      <div class="accessibility-check" id="accessibility-check">
-        <div class="contrast-item">
-          <span class="info-icon" data-tooltip="Contrast ratio against white background. WCAG AA requires 4.5:1 for normal text.">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          </span>
-          <span class="label">vs White:</span>
-          <span class="ratio">{whiteContrast.toFixed(2)}:1</span>
-          <div class="badges">
-            <span class={`badge ${whiteRating.AA ? 'pass' : 'fail'}`}>AA</span>
-            <span class={`badge ${whiteRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
-          </div>
-        </div>
-        <div class="contrast-item">
-          <span class="info-icon" data-tooltip="Contrast ratio against black background. WCAG AA requires 4.5:1 for normal text.">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          </span>
-          <span class="label">vs Black:</span>
-          <span class="ratio">{blackContrast.toFixed(2)}:1</span>
-          <div class="badges">
-            <span class={`badge ${blackRating.AA ? 'pass' : 'fail'}`}>AA</span>
-            <span class={`badge ${blackRating.AAA ? 'pass' : 'fail'}`}>AAA</span>
-          </div>
-        </div>
-      </div>
+      <AccessibilityCheck 
+        whiteContrast={whiteContrast} 
+        blackContrast={blackContrast} 
+        whiteRating={whiteRating} 
+        blackRating={blackRating} 
+      />
 
     <div class="page-container">
       <aside class="sidebar-toc">
