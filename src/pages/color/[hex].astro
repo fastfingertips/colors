@@ -5,6 +5,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch, getColorPsychology } from '../../utils/colorUtils';
 import { getCulturalAnalysis } from '../../utils/culturalColorData';
 import { getColorName } from '../../utils/colorNaming';
+import ColorSpaceEditor from '../../components/ColorSpaceEditor.astro';
 
 export const prerender = false;
 
@@ -107,137 +108,53 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
           </div>
 
           <div class="editor-grid">
-            <div class="color-space-block">
-              <div class="value-input-group">
-                <div class="info-wrapper">
-                  <button class="mini-copy-btn" title="Copy RGB" data-copy-target="rgb-input">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                  </button>
-                  <span class="info-icon" data-tooltip="Red, Green, Blue color model. Values 0-255.">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </span>
-                </div>
-                <span class="value-label">RGB</span>
-                <input type="text" id="rgb-input" value={rgb} spellcheck="false" />
-              </div>
-              <div class="slider-group">
-                <div class="slider-item">
-                  <label>R</label>
-                  <input type="range" id="slider-r" min="0" max="255" />
-                </div>
-                <div class="slider-item">
-                  <label>G</label>
-                  <input type="range" id="slider-g" min="0" max="255" />
-                </div>
-                <div class="slider-item">
-                  <label>B</label>
-                  <input type="range" id="slider-b" min="0" max="255" />
-                </div>
-              </div>
-            </div>
-
-            <div class="color-space-block">
-              <div class="value-input-group">
-                <div class="info-wrapper">
-                  <button class="mini-copy-btn" title="Copy HSL" data-copy-target="hsl-input">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                  </button>
-                  <span class="info-icon" data-tooltip="Hue, Saturation, Lightness. H: 0-360, S: 0-100%, L: 0-100%.">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </span>
-                </div>
-                <span class="value-label">HSL</span>
-                <input type="text" id="hsl-input" value={hsl} spellcheck="false" />
-              </div>
-              <div class="slider-group">
-                <div class="slider-item">
-                  <label>H</label>
-                  <input type="range" id="slider-h" min="0" max="360" />
-                </div>
-                <div class="slider-item">
-                  <label>S</label>
-                  <input type="range" id="slider-s" min="0" max="100" />
-                </div>
-                <div class="slider-item">
-                  <label>L</label>
-                  <input type="range" id="slider-l" min="0" max="100" />
-                </div>
-              </div>
-            </div>
-
-            <div class="color-space-block">
-              <div class="value-input-group">
-                <div class="info-wrapper">
-                  <button class="mini-copy-btn" title="Copy CMYK" data-copy-target="cmyk-input">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                  </button>
-                  <span class="info-icon" data-tooltip="Cyan, Magenta, Yellow, Key (Black). Standard for print.">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </span>
-                </div>
-                <span class="value-label">CMYK</span>
-                <input type="text" id="cmyk-input" value={cmyk} spellcheck="false" readonly />
-              </div>
-              <div class="slider-group">
-                <div class="slider-item">
-                  <label>C</label>
-                  <input type="range" id="slider-c" min="0" max="100" />
-                </div>
-                <div class="slider-item">
-                  <label>M</label>
-                  <input type="range" id="slider-m" min="0" max="100" />
-                </div>
-                <div class="slider-item">
-                  <label>Y</label>
-                  <input type="range" id="slider-y" min="0" max="100" />
-                </div>
-                <div class="slider-item">
-                  <label>K</label>
-                  <input type="range" id="slider-k" min="0" max="100" />
-                </div>
-              </div>
-            </div>
-
-            <div class="color-space-block">
-              <div class="value-input-group">
-                <div class="info-wrapper">
-                  <button class="mini-copy-btn" title="Copy OKLCH" data-copy-target="oklch-input">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                  </button>
-                  <span class="info-icon" data-tooltip="Perceptual Lightness, Chroma, Hue. Modern color space for consistent perceived lightness.">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                  </span>
-                </div>
-                <span class="value-label">OKLCH</span>
-                <input type="text" id="oklch-input" value={oklch} spellcheck="false" readonly />
-              </div>
-              <div class="slider-group">
-                <div class="slider-item">
-                  <label>L</label>
-                  <input type="range" id="slider-ok-l" min="0" max="100" />
-                </div>
-                <div class="slider-item">
-                  <label>C</label>
-                  <input type="range" id="slider-ok-c" min="0" max="0.32" step="0.001" />
-                </div>
-                <div class="slider-item">
-                  <label>H</label>
-                  <input type="range" id="slider-ok-h" min="0" max="360" />
-                </div>
-              </div>
-            </div>
+            <ColorSpaceEditor 
+              label="RGB" 
+              inputId="rgb-input" 
+              initialValue={rgb}
+              tooltip="Red, Green, Blue color model. Values 0-255."
+              sliders={[
+                { label: 'R', id: 'slider-r', min: 0, max: 255 },
+                { label: 'G', id: 'slider-g', min: 0, max: 255 },
+                { label: 'B', id: 'slider-b', min: 0, max: 255 }
+              ]}
+            />
+            <ColorSpaceEditor 
+              label="HSL" 
+              inputId="hsl-input" 
+              initialValue={hsl}
+              tooltip="Hue, Saturation, Lightness. H: 0-360, S: 0-100%, L: 0-100%."
+              sliders={[
+                { label: 'H', id: 'slider-h', min: 0, max: 360 },
+                { label: 'S', id: 'slider-s', min: 0, max: 100 },
+                { label: 'L', id: 'slider-l', min: 0, max: 100 }
+              ]}
+            />
+            <ColorSpaceEditor 
+              label="CMYK" 
+              inputId="cmyk-input" 
+              initialValue={cmyk}
+              tooltip="Cyan, Magenta, Yellow, Key (Black). Standard for print."
+              readonly={true}
+              sliders={[
+                { label: 'C', id: 'slider-c', min: 0, max: 100 },
+                { label: 'M', id: 'slider-m', min: 0, max: 100 },
+                { label: 'Y', id: 'slider-y', min: 0, max: 100 },
+                { label: 'K', id: 'slider-k', min: 0, max: 100 }
+              ]}
+            />
+            <ColorSpaceEditor 
+              label="OKLCH" 
+              inputId="oklch-input" 
+              initialValue={oklch}
+              tooltip="Perceptual Lightness, Chroma, Hue. Modern color space for consistent perceived lightness."
+              readonly={true}
+              sliders={[
+                { label: 'L', id: 'slider-ok-l', min: 0, max: 100 },
+                { label: 'C', id: 'slider-ok-c', min: 0, max: 0.32, step: '0.001' },
+                { label: 'H', id: 'slider-ok-h', min: 0, max: 360 }
+              ]}
+            />
           </div>
         </div>
 
