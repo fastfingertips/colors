@@ -1,0 +1,32 @@
+---
+interface Props {
+  colorHex: string;
+  colorName: { name: string; descriptor: string };
+}
+
+const { colorHex, colorName } = Astro.props;
+---
+<div class="main-hex-section">
+  <div class="info-wrapper">
+    <button class="mini-copy-btn" title="Copy HEX" data-copy-target="color-input">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    </button>
+    <span class="info-icon" data-tooltip="Main color hex code. Edit to change the base color.">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    </span>
+  </div>
+  <input 
+    type="text" 
+    id="color-input" 
+    value={colorHex} 
+    spellcheck="false"
+    maxlength="7"
+  />
+  <div class="color-name-display" id="color-name-display">
+    <span class="color-evocative-name" id="color-evocative-name">{colorName.name}</span>
+    <span class="color-descriptor" id="color-descriptor">{colorName.descriptor}</span>
+  </div>
+</div>

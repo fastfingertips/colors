@@ -10,6 +10,8 @@ import ColorCard from '../../components/cards/ColorCard.astro';
 import PsychologyCard from '../../components/cards/PsychologyCard.astro';
 import CultureCard from '../../components/cards/CultureCard.astro';
 import AccessibilityCheck from '../../components/editor/AccessibilityCheck.astro';
+import ActionButtons from '../../components/editor/ActionButtons.astro';
+import MainHexInput from '../../components/editor/MainHexInput.astro';
 
 export const prerender = false;
 
@@ -60,56 +62,11 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     <div class="guideline-h h2"></div>
     <div class="guideline-h h3"></div>
     <div class="guideline-h h4"></div>
-    <div class="action-group">
-      <button class="header-action-btn" id="random-btn" title="Shuffle color (Press Space)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 3h5v5"></path>
-          <path d="M4 20l7-7"></path>
-          <path d="M21 3l-7 7"></path>
-          <path d="M15 15l1.3-1.3"></path>
-          <path d="M18.5 18.5l2.5 2.5"></path>
-          <path d="M4 4l5 5"></path>
-          <path d="M21 16v5h-5"></path>
-        </svg>
-        Shuffle <span class="kbd-hint">Space</span>
-      </button>
-      <div class="divider"></div>
-      <button class="header-action-btn" id="copy-css-btn" title="Copy CSS Variables">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        CSS
-      </button>
-      <button class="header-action-btn" id="copy-tw-btn" title="Copy Tailwind Config">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-        Tailwind
-      </button>
-    </div>
+    <ActionButtons />
 
 
     <div class="color-editor-card" id="overview" style={`background-color: ${colorHex}; color: ${contrastColor}`}>
-          <div class="main-hex-section">
-            <div class="info-wrapper">
-              <button class="mini-copy-btn" title="Copy HEX" data-copy-target="color-input">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-              </button>
-              <span class="info-icon" data-tooltip="Main color hex code. Edit to change the base color.">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-              </span>
-            </div>
-            <input 
-              type="text" 
-              id="color-input" 
-              value={colorHex} 
-              spellcheck="false"
-              maxlength="7"
-            />
-            <div class="color-name-display" id="color-name-display">
-              <span class="color-evocative-name" id="color-evocative-name">{colorName.name}</span>
-              <span class="color-descriptor" id="color-descriptor">{colorName.descriptor}</span>
-            </div>
-          </div>
+          <MainHexInput colorHex={colorHex} colorName={colorName} />
 
           <div class="editor-grid">
             <ColorSpaceEditor 
