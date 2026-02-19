@@ -2,7 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import Footer from '../../components/Footer.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch } from '../../utils/colorUtils';
+import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, getRawCmyk, getRawOklch, getColorPsychology } from '../../utils/colorUtils';
+import { getCulturalAnalysis } from '../../utils/culturalColorData';
+import { getColorName } from '../../utils/colorNaming';
 
 export const prerender = false;
 
@@ -30,6 +32,9 @@ const blackContrast = getContrastRatio(colorHex, '#000000');
 const whiteRating = getWCAGRating(whiteContrast);
 const blackRating = getWCAGRating(blackContrast);
 
+const psychology = getColorPsychology(colorHex);
+const cultural = getCulturalAnalysis(colorHex);
+const colorName = getColorName(colorHex);
 const contrastColor = isDark ? '#ffffff' : '#000000';
 ---
 
@@ -95,6 +100,10 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               spellcheck="false"
               maxlength="7"
             />
+            <div class="color-name-display" id="color-name-display">
+              <span class="color-evocative-name" id="color-evocative-name">{colorName.name}</span>
+              <span class="color-descriptor" id="color-descriptor">{colorName.descriptor}</span>
+            </div>
           </div>
 
           <div class="editor-grid">
@@ -269,6 +278,18 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
               </a>
             </li>
             <li>
+              <a href="#psychology-section" class="toc-link" data-section="psychology">
+                <span class="toc-dot"></span>
+                Psychology
+              </a>
+            </li>
+            <li>
+              <a href="#culture-section" class="toc-link" data-section="culture">
+                <span class="toc-dot"></span>
+                Culture
+              </a>
+            </li>
+            <li>
               <a href="#harmonies-section" class="toc-link" data-section="harmonies">
                 <span class="toc-dot"></span>
                 Harmonies
@@ -286,6 +307,77 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
       <div class="content-section">
         <div class="color-dashboard">
+          <section class="psychology-section" id="psychology-section">
+            <div class="section-header">
+              <div class="header-with-info">
+                <h2>Mood & Emotion</h2>
+                <span class="info-icon" data-tooltip="The psychological and emotional impact of this color.">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="psychology-card">
+              <div class="psy-glow" style={`background-color: ${colorHex}`}></div>
+              <div class="psy-content">
+                <div class="psy-main">
+                  <h3 id="psy-name">{psychology.name}</h3>
+                  <div class="tone-tag" id="psy-tone">{psychology.tone}</div>
+                  <div class="emotion-badges" id="emotion-badges">
+                    {psychology.emotions.map(emotion => (
+                      <span class="emotion-badge">{emotion}</span>
+                    ))}
+                  </div>
+                </div>
+                <p class="psy-desc" id="psy-desc">{psychology.description}</p>
+              </div>
+            </div>
+          </section>
+
+          <div class="dashboard-divider"></div>
+
+          <section class="culture-section" id="culture-section">
+            <div class="section-header">
+              <div class="header-with-info">
+                <h2>Cultural Perception</h2>
+                <span class="info-icon" data-tooltip="How this color is perceived across different world cultures and regions.">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="culture-card" id="culture-card">
+              <div class="culture-grid">
+                {cultural.notes.map(note => (
+                  <div class={`culture-item culture-${note.sentiment}`}>
+                    <div class="culture-item-header">
+                      <span class="culture-region">{note.region}</span>
+                      {note.sentiment === 'warning' && (
+                        <span class="culture-warn-badge" title="Warning or Taboo">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        </span>
+                      )}
+                    </div>
+                    <p class="culture-meaning">{note.meaning}</p>
+                  </div>
+                ))}
+              </div>
+              {cultural.warnings.length > 0 && (
+                <div class="culture-warnings">
+                  {cultural.warnings.map(w => (
+                    <div class="culture-warning-item">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      <span>{w}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div class="culture-tip">
+                <strong>Design Tip:</strong> {cultural.designTip}
+              </div>
+            </div>
+          </section>
+
+          <div class="dashboard-divider"></div>
+
           <section class="harmonies-area" id="harmonies-section">
             <div class="section-header">
               <div class="header-with-info">
@@ -388,6 +480,30 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     position: relative;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 25px;
+  }
+
+  .color-name-display {
+    text-align: center;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .color-evocative-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+  }
+
+  .color-descriptor {
+    font-size: 0.75rem;
+    font-weight: 400;
+    opacity: 0.5;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   #color-input {
@@ -828,6 +944,220 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     margin: 0 10px;
   }
 
+  .psychology-section {
+    padding: 30px;
+  }
+
+  .psychology-card {
+    position: relative;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-main);
+  }
+
+  .psy-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .psy-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .psy-main {
+    display: flex;
+    align-items: baseline;
+    gap: 25px;
+    flex-wrap: wrap;
+  }
+
+  #psy-name {
+    font-size: 3rem;
+    font-weight: 950;
+    margin: 0;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    line-height: 1;
+  }
+
+  .tone-tag {
+    font-size: 0.8rem;
+    font-weight: 900;
+    padding: 4px 12px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    box-shadow: var(--shadow-glow);
+  }
+
+  .emotion-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .emotion-badge {
+    padding: 6px 14px;
+    background: var(--button-active);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-color);
+    opacity: 0.8;
+  }
+
+  .psy-desc {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 700px;
+    color: var(--text-color);
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  /* Cultural Section */
+  .culture-section {
+    padding: 30px;
+  }
+
+  .culture-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-main);
+  }
+
+  .culture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .culture-item {
+    background: var(--button-active);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .culture-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .culture-warning {
+    background: rgba(230, 126, 34, 0.06);
+    border: 1px solid rgba(230, 126, 34, 0.2);
+  }
+
+  .culture-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .culture-flag {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .culture-region {
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-color);
+  }
+
+  .culture-warn-badge {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: #e67e22;
+    opacity: 0.8;
+  }
+
+  .culture-meaning {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    margin: 0;
+    color: var(--text-color);
+    opacity: 0.75;
+  }
+
+  .culture-warnings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .culture-warning-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(230, 126, 34, 0.08);
+    border: 1px solid rgba(230, 126, 34, 0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-color);
+  }
+
+  .culture-warning-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #e67e22;
+  }
+
+  .culture-tip {
+    padding: 14px 18px;
+    background: rgba(46, 204, 113, 0.06);
+    border: 1px solid rgba(46, 204, 113, 0.15);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-color);
+    opacity: 0.85;
+  }
+
+  .culture-tip strong {
+    color: #2ecc71;
+    margin-right: 4px;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -966,6 +1296,13 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     transform: translateY(-2px);
   }
 
+  .harmony-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
   .harmony-label {
     font-size: 0.75rem;
     font-weight: 900;
@@ -973,7 +1310,12 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     letter-spacing: 0.1em;
     color: var(--text-color);
     opacity: 0.6;
-    margin-bottom: 4px;
+    margin-bottom: 0;
+  }
+
+  .vibration-warning svg {
+    display: block;
+    stroke: #ff4c4c;
   }
 
   .harmony-colors {
@@ -1055,38 +1397,47 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 </style>
 
 <script>
-  import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, rgbToHex, hslToHex, getRawRgb, getRawHsl, getRandomHex, getColorHarmonies, getRawCmyk, getRawOklch, cmykToHex, oklchToHex } from '../../utils/colorUtils';
+  import { generateShades, generateTints, isDarkColor, hexToRgb, hexToHsl, getContrastRatio, getWCAGRating, rgbToHex, hslToHex, getRawRgb, getRawHsl, getRandomHex, getColorHarmonies, getRawCmyk, getRawOklch, cmykToHex, oklchToHex, getColorPsychology, isVibratingCombo } from '../../utils/colorUtils';
+  import { getCulturalAnalysis } from '../../utils/culturalColorData';
+  import { getColorName } from '../../utils/colorNaming';
 
-  const colorInput = document.getElementById('color-input');
-  const rgbInput = document.getElementById('rgb-input');
-  const hslInput = document.getElementById('hsl-input');
-  const cmykInput = document.getElementById('cmyk-input');
-  const oklchInput = document.getElementById('oklch-input');
+  const colorInput = document.getElementById('color-input') as HTMLInputElement;
+  const rgbInput = document.getElementById('rgb-input') as HTMLInputElement;
+  const hslInput = document.getElementById('hsl-input') as HTMLInputElement;
+  const cmykInput = document.getElementById('cmyk-input') as HTMLInputElement;
+  const oklchInput = document.getElementById('oklch-input') as HTMLInputElement;
   const randomBtn = document.getElementById('random-btn');
-  const tintsGrid = document.getElementById('tints-grid');
-  const shadesGrid = document.getElementById('shades-grid');
-  const harmoniesGrid = document.getElementById('harmonies-grid');
-  const accessCheck = document.getElementById('accessibility-check');
-  const copyCssBtn = document.getElementById('copy-css-btn');
-  const copyTwBtn = document.getElementById('copy-tw-btn');
-  const colorEditorCard = document.querySelector('.color-editor-card');
+  const tintsGrid = document.getElementById('tints-grid') as HTMLElement;
+  const shadesGrid = document.getElementById('shades-grid') as HTMLElement;
+  const harmoniesGrid = document.getElementById('harmonies-grid') as HTMLElement;
+  const accessCheck = document.getElementById('accessibility-check') as HTMLElement;
+  const copyCssBtn = document.getElementById('copy-css-btn') as HTMLElement;
+  const copyTwBtn = document.getElementById('copy-tw-btn') as HTMLElement;
+  const colorEditorCard = document.querySelector('.color-editor-card') as HTMLElement;
+  const psyName = document.getElementById('psy-name') as HTMLElement;
+  const psyDesc = document.getElementById('psy-desc') as HTMLElement;
+  const emotionBadges = document.getElementById('emotion-badges') as HTMLElement;
+  const psyGlow = document.querySelector('.psy-glow') as HTMLElement;
+  const cultureCard = document.getElementById('culture-card') as HTMLElement;
+  const colorEvocativeName = document.getElementById('color-evocative-name') as HTMLElement;
+  const colorDescriptor = document.getElementById('color-descriptor') as HTMLElement;
 
 
-  const sliderR = document.getElementById('slider-r');
-  const sliderG = document.getElementById('slider-g');
-  const sliderB = document.getElementById('slider-b');
-  const sliderH = document.getElementById('slider-h');
-  const sliderS = document.getElementById('slider-s');
-  const sliderL = document.getElementById('slider-l');
-  const sliderC = document.getElementById('slider-c');
-  const sliderM = document.getElementById('slider-m');
-  const sliderY = document.getElementById('slider-y');
-  const sliderK = document.getElementById('slider-k');
-  const sliderOkL = document.getElementById('slider-ok-l');
-  const sliderOkC = document.getElementById('slider-ok-c');
-  const sliderOkH = document.getElementById('slider-ok-h');
+  const sliderR = document.getElementById('slider-r') as HTMLInputElement;
+  const sliderG = document.getElementById('slider-g') as HTMLInputElement;
+  const sliderB = document.getElementById('slider-b') as HTMLInputElement;
+  const sliderH = document.getElementById('slider-h') as HTMLInputElement;
+  const sliderS = document.getElementById('slider-s') as HTMLInputElement;
+  const sliderL = document.getElementById('slider-l') as HTMLInputElement;
+  const sliderC = document.getElementById('slider-c') as HTMLInputElement;
+  const sliderM = document.getElementById('slider-m') as HTMLInputElement;
+  const sliderY = document.getElementById('slider-y') as HTMLInputElement;
+  const sliderK = document.getElementById('slider-k') as HTMLInputElement;
+  const sliderOkL = document.getElementById('slider-ok-l') as HTMLInputElement;
+  const sliderOkC = document.getElementById('slider-ok-c') as HTMLInputElement;
+  const sliderOkH = document.getElementById('slider-ok-h') as HTMLInputElement;
 
-  function createColorCard(hex) {
+  function createColorCard(hex: string) {
     const isDark = isDarkColor(hex);
     const card = document.createElement('div');
     card.className = 'color-card';
@@ -1102,7 +1453,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     return card;
   }
 
-  function copyToClipboard(hex, element) {
+  function copyToClipboard(hex: string, element?: HTMLElement) {
     navigator.clipboard.writeText(hex).then(() => {
       const event = new CustomEvent('color-copied', {
         detail: {
@@ -1115,7 +1466,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     });
   }
 
-  function setupSliderGroup(sliders, updateFn) {
+  function setupSliderGroup(sliders: HTMLInputElement[], updateFn: (id: string) => void) {
     sliders.forEach(slider => {
       const triggerUpdate = () => updateFn(slider.id);
       
@@ -1139,7 +1490,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     });
   }
 
-  function updatePageContent(hex, sourceInputId = null) {
+  function updatePageContent(hex: string, sourceInputId: string | null = null) {
     if (!/^#[0-9A-F]{6}$/i.test(hex)) return;
 
     const isDark = isDarkColor(hex);
@@ -1241,16 +1592,30 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
       const group = document.createElement('div');
       group.className = 'harmony-group';
       
+      const titleWrapper = document.createElement('div');
+      titleWrapper.className = 'harmony-title-wrapper';
+
       const label = document.createElement('span');
       label.className = 'harmony-label';
       label.textContent = type.replace(/([A-Z])/g, ' $1').trim();
+
+      titleWrapper.appendChild(label);
+      
+      const hasVibration = colors.some(c => isVibratingCombo(hex, c));
+      if (hasVibration) {
+        const warningIcon = document.createElement('span');
+        warningIcon.className = 'vibration-warning info-icon';
+        warningIcon.setAttribute('data-tooltip', 'High-saturation opposing colors. May cause visual vibration ("Vibrating Color" effect) if placed directly adjacent.');
+        warningIcon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+        titleWrapper.appendChild(warningIcon);
+      }
       
       const colorsContainer = document.createElement('div');
       colorsContainer.className = 'harmony-colors';
       
       colors.forEach(c => colorsContainer.appendChild(createColorCard(c)));
       
-      group.appendChild(label);
+      group.appendChild(titleWrapper);
       group.appendChild(colorsContainer);
       harmoniesGrid.appendChild(group);
     });
@@ -1297,12 +1662,66 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
       });
     };
 
+    const psyTone = document.getElementById('psy-tone');
+    const psychology = getColorPsychology(hex);
+    if (psyName) psyName.textContent = psychology.name;
+    if (psyTone) psyTone.textContent = psychology.tone;
+    if (psyDesc) psyDesc.textContent = psychology.description;
+    if (psyGlow) psyGlow.style.backgroundColor = hex;
+
+    // Update color naming
+    const naming = getColorName(hex);
+    if (colorEvocativeName) colorEvocativeName.textContent = naming.name;
+    if (colorDescriptor) colorDescriptor.textContent = naming.descriptor;
+    if (emotionBadges) {
+      emotionBadges.innerHTML = psychology.emotions
+        .map(emotion => `<span class="emotion-badge">${emotion}</span>`)
+        .join('');
+    }
+
+    // Cultural section update
+    const cultural = getCulturalAnalysis(hex);
+    if (cultureCard) {
+      const notesHtml = cultural.notes.map(note => `
+        <div class="culture-item culture-${note.sentiment}">
+          <div class="culture-item-header">
+            <span class="culture-region">${note.region}</span>
+            ${note.sentiment === 'warning' ? `
+              <span class="culture-warn-badge" title="Warning or Taboo">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </span>
+            ` : ''}
+          </div>
+          <p class="culture-meaning">${note.meaning}</p>
+        </div>
+      `).join('');
+
+      const warningsHtml = cultural.warnings.length > 0 ? `
+        <div class="culture-warnings">
+          ${cultural.warnings.map(w => `
+            <div class="culture-warning-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>${w}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      cultureCard.innerHTML = `
+        <div class="culture-grid">${notesHtml}</div>
+        ${warningsHtml}
+        <div class="culture-tip">
+          <strong>Design Tip:</strong> ${cultural.designTip}
+        </div>
+      `;
+    }
+
     const pureHex = hex.substring(1);
     window.history.replaceState({}, '', `/color/${pureHex}`);
     document.title = `Color ${hex}`;
 
-    const stickyHex = document.getElementById('sticky-hex');
-    const stickySwatch = document.getElementById('sticky-swatch');
+    const stickyHex = document.getElementById('sticky-hex') as HTMLInputElement | null;
+    const stickySwatch = document.getElementById('sticky-swatch') as HTMLElement | null;
     if (stickyHex && sourceInputId !== 'sticky-hex') stickyHex.value = hex;
     if (stickySwatch) stickySwatch.style.backgroundColor = hex;
 
@@ -1327,7 +1746,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
 
   const tocLinks = document.querySelectorAll('.toc-link');
   const sections = [
-    document.getElementById('detail-header'),
+    document.getElementById('overview'),
+    document.getElementById('psychology-section'),
+    document.getElementById('culture-section'),
     document.getElementById('harmonies-section'),
     document.getElementById('shades-tints-section')
   ];
@@ -1355,15 +1776,15 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     if (section) observer.observe(section);
   });
 
-  let animationFrame = null;
-  function animateToColor(targetHex) {
+  let animationFrame: number | null = null;
+  function animateToColor(targetHex: string) {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     const startRgb = getRawRgb(colorInput.value);
     const endRgb = getRawRgb(targetHex);
     const duration = 1500;
     const startTime = performance.now();
 
-    function step(currentTime) {
+    function step(currentTime: number) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
@@ -1406,7 +1827,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   updatePageContent(colorInput.value);
 
   colorInput?.addEventListener('input', (e) => {
-    let value = e.target.value;
+    let value = (e.target as HTMLInputElement).value;
     if (!value.startsWith('#') && value.length > 0) value = '#' + value;
     if (value.length > 7) value = value.substring(0, 7);
     colorInput.value = value;
@@ -1416,9 +1837,9 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
     }
   });
 
-  const stickyHexInput = document.getElementById('sticky-hex');
+  const stickyHexInput = document.getElementById('sticky-hex') as HTMLInputElement;
   stickyHexInput?.addEventListener('input', (e) => {
-    let value = e.target.value;
+    let value = (e.target as HTMLInputElement).value;
     if (!value.startsWith('#') && value.length > 0) value = '#' + value;
     if (value.length > 7) value = value.substring(0, 7);
     stickyHexInput.value = value;
@@ -1429,7 +1850,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   rgbInput?.addEventListener('input', (e) => {
-    const value = e.target.value;
+    const value = (e.target as HTMLInputElement).value;
     const match = value.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/i);
     if (match) {
       const r = Math.min(255, Math.max(0, Number.parseInt(match[1])));
@@ -1440,7 +1861,7 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   hslInput?.addEventListener('input', (e) => {
-    const value = e.target.value;
+    const value = (e.target as HTMLInputElement).value;
     const match = value.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/i);
     if (match) {
       const h = Math.min(360, Math.max(0, Number.parseInt(match[1])));
@@ -1467,20 +1888,20 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
   });
 
   document.body.addEventListener('click', (e) => {
-    const card = e.target.closest('.color-card');
+    const target = e.target as HTMLElement;
+    const card = target.closest('.color-card');
     if (card) {
       const hex = card.getAttribute('data-hex');
-      if (hex) copyToClipboard(hex, card);
+      if (hex) copyToClipboard(hex, card as HTMLElement);
       return;
     }
 
-    const copyBtn = e.target.closest('.mini-copy-btn, .copy-trigger');
+    const copyBtn = target.closest('.mini-copy-btn, .copy-trigger');
     if (copyBtn) {
-      const targetId = copyBtn.getAttribute('data-copy-target');
+      const targetId = copyBtn.getAttribute('data-copy-target') || '';
       const input = document.getElementById(targetId) as HTMLInputElement;
       if (input) copyToClipboard(input.value);
     }
-
   });
 
 </script>

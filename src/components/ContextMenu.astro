@@ -38,21 +38,21 @@
 <script>
   import { hexToRgb, hexToHsl } from '../utils/colorUtils';
 
-  const contextMenu = document.getElementById('context-menu');
-  const menuPreviewColor = contextMenu?.querySelector('.menu-color-preview');
-  const menuColorName = contextMenu?.querySelector('.menu-color-name');
-  const menuColorHex = contextMenu?.querySelector('.menu-color-hex');
-  const menuHexVal = contextMenu?.querySelector('button[data-format="hex"] .value-preview');
-  const menuRgbVal = contextMenu?.querySelector('button[data-format="rgb"] .value-preview');
-  const menuHslVal = contextMenu?.querySelector('button[data-format="hsl"] .value-preview');
+  const contextMenu = document.getElementById('context-menu') as HTMLElement;
+  const menuPreviewColor = contextMenu?.querySelector('.menu-color-preview') as HTMLElement;
+  const menuColorName = contextMenu?.querySelector('.menu-color-name') as HTMLElement;
+  const menuColorHex = contextMenu?.querySelector('.menu-color-hex') as HTMLElement;
+  const menuHexVal = contextMenu?.querySelector('button[data-format="hex"] .value-preview') as HTMLElement;
+  const menuRgbVal = contextMenu?.querySelector('button[data-format="rgb"] .value-preview') as HTMLElement;
+  const menuHslVal = contextMenu?.querySelector('button[data-format="hsl"] .value-preview') as HTMLElement;
 
   let lastRightClickedColor = '';
-  let lastRightClickedElement = null;
+  let lastRightClickedElement: HTMLElement | null = null;
 
   if (contextMenu) {
-    document.addEventListener('contextmenu', (e) => {
-      const target = e.target;
-      const colorBox = target.closest('.color-box, .color-card, .hex-clock-area');
+    document.addEventListener('contextmenu', (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const colorBox = target.closest('.color-box, .color-card, .hex-clock-area') as HTMLElement;
 
       if (colorBox) {
         e.preventDefault();
@@ -98,7 +98,8 @@
     });
 
     contextMenu.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
+      const target = e.target as HTMLElement;
+      const btn = target.closest('button');
       if (!btn || !lastRightClickedColor) return;
 
       const format = btn.getAttribute('data-format');
