@@ -1470,26 +1470,13 @@ const contrastColor = isDark ? '#ffffff' : '#000000';
       const hex = card.getAttribute('data-hex');
       if (hex) copyToClipboard(hex, card);
       return;
-<<<<<<< HEAD
-=======
     }
 
-    const copyBtn = e.target.closest('.mini-copy-btn');
+    const copyBtn = e.target.closest('.mini-copy-btn, .copy-trigger');
     if (copyBtn) {
       const targetId = copyBtn.getAttribute('data-copy-target');
-      const input = document.getElementById(targetId);
+      const input = document.getElementById(targetId) as HTMLInputElement;
       if (input) copyToClipboard(input.value);
->>>>>>> cd05b6f (feat(ui): add mini copy buttons to color profile info area)
-    }
-
-    const copyTrigger = e.target.closest('.copy-trigger');
-    if (copyTrigger) {
-      const targetId = copyTrigger.getAttribute('data-copy-target');
-      const input = document.getElementById(targetId);
-      if (input) {
-        copyToClipboard(input.value);
-      }
-      return;
     }
 
   });
