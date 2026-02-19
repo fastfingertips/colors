@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { isDarkColor } from '../utils/colorUtils';
+---
+
+<Layout title="Hex Clock - Color Time">
+	<main class="clock-screen hex-clock-area" id="clock-main" data-hex="#000000">
+		<div class="clock-content">
+      <h1 id="hex-val" class="hex-val">#000000</h1>
+    </div>
+			
+    <div class="ui-overlays">
+      <div class="info-footer">
+        <button id="info-trigger" class="ui-btn">What is this?</button>
+        <div id="explanation" class="explanation hidden">
+          <strong>Hex Clock.</strong> See time as a color. 
+          The hex clock maps Hours to Red, Minutes to Green, and Seconds to Blue.
+          Each second is a unique shade. Right-click to copy the color.
+        </div>
+        <a href="/" class="back-link ui-btn">/ Back to Home</a>
+      </div>
+    </div>
+	</main>
+</Layout>
+
+<style is:global>
+	.theme-controller {
+		display: none !important;
+	}
+</style>
+
+<style>
+	.clock-screen {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+		cursor: default;
+    background: #000;
+    transition: background-color 1s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	}
+
+  .clock-content {
+    text-align: center;
+    z-index: 20;
+  }
+
+  .hex-val {
+		font-size: min(15vw, 10rem);
+		font-weight: 200;
+		letter-spacing: -0.02em;
+		margin: 0;
+		text-transform: uppercase;
+    line-height: 1;
+    transition: color 0.5s ease;
+	}
+
+	.ui-overlays {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 100;
+	}
+
+	.info-footer {
+		position: absolute;
+		bottom: 30px;
+		left: 30px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		max-width: 400px;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+
+	.info-footer.visible {
+		opacity: 1;
+		pointer-events: all;
+	}
+
+	.ui-btn {
+		background: transparent;
+		border: none;
+		color: white;
+		opacity: 0.6;
+		cursor: pointer;
+		font-size: 0.85rem;
+		padding: 0;
+		text-align: left;
+		text-decoration: underline;
+		width: fit-content;
+    pointer-events: all;
+	}
+
+	.ui-btn:hover { opacity: 1; }
+
+	.explanation {
+		font-size: 0.85rem;
+		line-height: 1.6;
+		background: rgba(0, 0, 0, 0.8);
+		padding: 20px;
+		border-radius: 12px;
+		backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+	}
+
+	.explanation.hidden { display: none; }
+
+	.back-link {
+		color: white;
+		opacity: 0.4;
+		text-decoration: none;
+		font-size: 0.8rem;
+		margin-top: 6px;
+	}
+</style>
+
+<script>
+	import { isDarkColor } from '../utils/colorUtils';
+
+	function updateClock() {
+    const now = new Date();
+    const mainContainer = document.getElementById('clock-main');
+    const hexDisplay = document.getElementById('hex-val');
+    
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const s = now.getSeconds().toString().padStart(2, '0');
+    
+    const hexColor = `#${h}${m}${s}`;
+    const contrastColor = isDarkColor(hexColor) ? '#ffffff' : '#000000';
+
+    if (mainContainer) {
+      mainContainer.style.backgroundColor = hexColor;
+      mainContainer.setAttribute('data-hex', hexColor);
+    }
+    if (hexDisplay) {
+      hexDisplay.textContent = hexColor;
+      hexDisplay.style.color = contrastColor;
+    }
+
+    const event = new CustomEvent('color-copied', { detail: { color: hexColor } });
+    document.dispatchEvent(event);
+	}
+
+	updateClock();
+	const interval = setInterval(updateClock, 1000);
+
+	const infoBtn = document.getElementById('info-trigger');
+	const explanation = document.getElementById('explanation');
+  const footer = document.querySelector('.info-footer');
+	
+	infoBtn?.addEventListener('click', () => explanation?.classList.toggle('hidden'));
+
+	let mouseTimer: ReturnType<typeof setTimeout>;
+	document.addEventListener('mousemove', () => {
+		if (footer) footer.classList.add('visible');
+		clearTimeout(mouseTimer);
+		mouseTimer = setTimeout(() => {
+			if (explanation && !explanation.classList.contains('hidden')) return;
+			if (footer) footer.classList.remove('visible');
+		}, 3000);
+	});
+
+	document.addEventListener('astro:before-preparation', () => clearInterval(interval), { once: true });
+</script>

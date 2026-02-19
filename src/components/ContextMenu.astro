@@ -52,12 +52,13 @@
   if (contextMenu) {
     document.addEventListener('contextmenu', (e) => {
       const target = e.target;
-      const colorBox = target.closest('.color-box, .color-card');
+      const colorBox = target.closest('.color-box, .color-card, .hex-clock-area');
 
       if (colorBox) {
         e.preventDefault();
         const hex = colorBox.getAttribute('data-hex') || '';
-        const name = colorBox.querySelector('.color-name')?.textContent || 'Color';
+        let name = colorBox.querySelector('.color-name')?.textContent || 'Color';
+        if (colorBox.classList.contains('hex-clock-area')) name = 'Hex Clock';
 
         if (!hex) return;
 
